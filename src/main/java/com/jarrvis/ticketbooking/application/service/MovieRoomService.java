@@ -1,8 +1,11 @@
-package com.jarrvis.ticketbooking.application;
+package com.jarrvis.ticketbooking.application.service;
 
+import com.jarrvis.ticketbooking.application.mappers.RoomMapper;
+import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument;
 import com.jarrvis.ticketbooking.infrastructure.mongo.RoomDocument;
 import com.jarrvis.ticketbooking.infrastructure.mongo.RoomMongoRepository;
 import com.jarrvis.ticketbooking.ui.dto.response.RoomResource;
+import com.jarrvis.ticketbooking.ui.exception.AlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +31,14 @@ public class MovieRoomService {
 
 
     public Mono<RoomDocument> addNewRoom(String name, int rows, int seatsPerRow) {
-        RoomDocument room = new RoomDocument(name, rows, seatsPerRow);
-        return this.roomMongoRepository.save(room);
+        return this.roomMongoRepository.existsByName(name)
+                .doOnNext(exists -> {
+                    if (exists) {
+                        throw new AlreadyExistException(String.format("Room with name: %s already exists", name));
+                    }
+                })
+                .flatMap(exists -> Mono.just(new RoomDocument(name, rows, seatsPerRow))
+                        .flatMap(this.roomMongoRepository::save));
     }
 
     public Flux<RoomResource> listAllRooms() {

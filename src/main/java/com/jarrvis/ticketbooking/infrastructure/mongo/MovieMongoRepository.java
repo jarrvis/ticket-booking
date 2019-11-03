@@ -6,5 +6,6 @@ import reactor.core.publisher.Mono;
 public interface MovieMongoRepository extends ReactiveMongoRepository<MovieDocument, String> {
 
     Mono<MovieDocument> findByName(String name);
+    Mono<Boolean> existsByName(String name);
 
 }

@@ -1,38 +1,49 @@
 package com.jarrvis.ticketbooking.application
 
-import com.jarrvis.ticketbooking.domain.Screening
-import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument
+import com.jarrvis.ticketbooking.application.mappers.RoomMapper
 import com.jarrvis.ticketbooking.infrastructure.mongo.RoomDocument
-import com.jarrvis.ticketbooking.infrastructure.mongo.ScreeningDocument
+import com.jarrvis.ticketbooking.ui.dto.response.RoomResource
 import spock.lang.Specification
-
-import java.time.LocalDateTime
 
 class RoomMapperSpec extends Specification {
 
 
-    private ScreeningMapper screeningMapper
+    private RoomMapper roomMapper
 
 
     def setup() {
-        screeningMapper = screeningMapper.INSTANCE
+        roomMapper = RoomMapper.INSTANCE
     }
 
-    def "Screening mapper should map fields from domain to document"() {
+    def "Room mapper should map fields from entity to resource"() {
         given:
-            def startTime = LocalDateTime.now()
-            def endTime = LocalDateTime.now().plusHours(2)
-            def screening = new Screening(startTime, endTime, "Joker", "Dream", 10, 10)
-            def movie = new MovieDocument("Joker", "Joker", LocalDateTime.now().minusDays(2), LocalDateTime.now().plusDays(20))
-            def room = new RoomDocument("Dream", 10, 10)
+            def name = "Dream"
+            def rows = 10
+            def seatsPerRow = 15
+            def room = new RoomDocument(name, rows, seatsPerRow)
 
         when:
-            ScreeningDocument screeningDocument = screeningMapper.toScreeningDocument(screening, movie, room)
+            RoomResource resource = roomMapper.toRoomResource(room)
 
         then:
-            screeningDocument.movie == movie
-            screeningDocument.room == room
-            screeningDocument.startTime == startTime
-            screeningDocument.endTime == endTime
+            resource.name == name
+            resource.rows == rows
+            resource.seatsPerRow == seatsPerRow
+    }
+
+    def "Room mapper should map fields from entities to resources"() {
+        given:
+            def name = "Dream"
+            def rows = 10
+            def seatsPerRow = 15
+            def rooms = [new RoomDocument(name, rows, seatsPerRow)]
+
+        when:
+            List<RoomResource> resources = roomMapper.toRoomResources(rooms)
+
+        then:
+            resources.first().name == name
+            resources.first().rows == rows
+            resources.first().seatsPerRow == seatsPerRow
     }
 }

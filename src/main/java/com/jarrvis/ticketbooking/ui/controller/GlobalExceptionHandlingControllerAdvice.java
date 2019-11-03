@@ -1,5 +1,6 @@
 package com.jarrvis.ticketbooking.ui.controller;
 
+import com.jarrvis.ticketbooking.ui.exception.AlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,18 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandlingControllerAdvice {
 
+    /**
+     * General fallback exception handler, translating all not otherwise caught errors into HTTP status code 409.
+     *
+     * @param ex Exception
+     */
+    @ExceptionHandler(AlreadyExistException.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ResponseBody
+    public VndErrors handleServiceUnavailableException(AlreadyExistException ex) {
+        log.error(ex.getMessage(), ex);
+        return new VndErrors("error", ex.getMessage());
+    }
 
     /**
      * Exception handler for <i>MethodArgumentNotValidException</i>, translating error into HTTP status code 422 and returning

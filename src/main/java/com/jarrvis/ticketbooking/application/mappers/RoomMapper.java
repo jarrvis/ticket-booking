@@ -1,4 +1,4 @@
-package com.jarrvis.ticketbooking.application;
+package com.jarrvis.ticketbooking.application.mappers;
 
 
 import com.jarrvis.ticketbooking.infrastructure.mongo.RoomDocument;

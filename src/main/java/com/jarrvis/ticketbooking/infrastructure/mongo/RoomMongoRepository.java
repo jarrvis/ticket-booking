@@ -7,5 +7,6 @@ public interface RoomMongoRepository extends ReactiveMongoRepository<RoomDocumen
 
     Mono<RoomDocument> findByName(String name);
 
-    //Flux<RoomDocument> findAll();
+    Mono<Boolean> existsByName(String name);
+
 }

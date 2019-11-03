@@ -1,8 +1,7 @@
 package com.jarrvis.ticketbooking.ui.controller;
 
 
-import com.jarrvis.ticketbooking.application.MovieRoomService;
-import com.jarrvis.ticketbooking.ui.dto.request.AddNewMovieRequest;
+import com.jarrvis.ticketbooking.application.service.MovieRoomService;
 import com.jarrvis.ticketbooking.ui.dto.request.AddNewRoomRequest;
 import com.jarrvis.ticketbooking.ui.dto.response.RoomResource;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -51,7 +51,7 @@ public class RoomController {
             @ApiResponse(code = 401, message = "Missing required authorization"),
             @ApiResponse(code = 428, message = "Add new room body parameters contains validation errors"),
     })
-    public ResponseEntity<Void> add(
+    public Mono<ResponseEntity> add(
             @ApiParam(value = "Room details to be added to multiplex") @RequestBody @Valid AddNewRoomRequest addNewRoomRequest,
             BindingResult bindingResult) throws NoSuchMethodException, MethodArgumentNotValidException {
 
@@ -62,8 +62,8 @@ public class RoomController {
                     bindingResult);
         }
 
-        movieRoomService.addNewRoom(addNewRoomRequest.getName(), addNewRoomRequest.getRows(), addNewRoomRequest.getSeatsPerRow()).subscribe();
-        return ResponseEntity.created(URI.create("")).build();
+        return movieRoomService.addNewRoom(addNewRoomRequest.getName(), addNewRoomRequest.getRows(), addNewRoomRequest.getSeatsPerRow())
+                .map((status) -> ResponseEntity.created(URI.create("")).build());
     }
 
     /**

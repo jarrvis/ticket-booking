@@ -1,10 +1,8 @@
-package com.jarrvis.ticketbooking.application;
+package com.jarrvis.ticketbooking.application.mappers;
 
 
 import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument;
-import com.jarrvis.ticketbooking.infrastructure.mongo.ScreeningDocument;
 import com.jarrvis.ticketbooking.ui.dto.response.MovieResource;
-import com.jarrvis.ticketbooking.ui.dto.response.ScreeningResource;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

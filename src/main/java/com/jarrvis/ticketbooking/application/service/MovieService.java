@@ -1,8 +1,10 @@
-package com.jarrvis.ticketbooking.application;
+package com.jarrvis.ticketbooking.application.service;
 
+import com.jarrvis.ticketbooking.application.mappers.MovieMapper;
 import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument;
 import com.jarrvis.ticketbooking.infrastructure.mongo.MovieMongoRepository;
 import com.jarrvis.ticketbooking.ui.dto.response.MovieResource;
+import com.jarrvis.ticketbooking.ui.exception.AlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +12,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -31,8 +32,14 @@ public class MovieService {
 
 
     public Mono<MovieDocument> addNewMovie(String name, String description, LocalDateTime firstScreeningDate, LocalDateTime lastScreeningDate) {
-        MovieDocument movie = new MovieDocument(name, description, firstScreeningDate, lastScreeningDate);
-        return this.movieMongoRepository.save(movie);
+        return this.movieMongoRepository.existsByName(name)
+                .doOnNext(exists -> {
+                    if (exists) {
+                        throw new AlreadyExistException(String.format("Movie with name: %s already exists", name));
+                    }
+                })
+                .flatMap(exists -> Mono.just(new MovieDocument(name, description, firstScreeningDate, lastScreeningDate))
+                .flatMap(this.movieMongoRepository::save));
     }
 
     public Flux<MovieResource> listAllMovies() {
