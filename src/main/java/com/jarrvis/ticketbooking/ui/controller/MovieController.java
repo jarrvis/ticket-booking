@@ -52,7 +52,7 @@ public class MovieController {
             @ApiResponse(code = 409, message = "Movie with such name already exists"),
             @ApiResponse(code = 422, message = "Add new movie body parameters contains validation errors"),
     })
-    public Mono<ResponseEntity> add(
+    public Mono<ResponseEntity<MovieResource>> add(
             @ApiParam(value = "Movie details to be added to offer") @RequestBody @Valid AddNewMovieRequest addNewMovieRequest,
             BindingResult bindingResult) throws NoSuchMethodException, MethodArgumentNotValidException {
 

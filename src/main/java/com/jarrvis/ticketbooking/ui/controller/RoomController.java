@@ -52,7 +52,7 @@ public class RoomController {
             @ApiResponse(code = 409, message = "Room with such name already exists"),
             @ApiResponse(code = 428, message = "Add new room body parameters contains validation errors"),
     })
-    public Mono<ResponseEntity> add(
+    public Mono<ResponseEntity<RoomResource>> add(
             @ApiParam(value = "Room details to be added to multiplex") @RequestBody @Valid AddNewRoomRequest addNewRoomRequest,
             BindingResult bindingResult) throws NoSuchMethodException, MethodArgumentNotValidException {
 

@@ -11,6 +11,6 @@ public class ScreeningResource {
 
     private String title;
     private LocalDateTime startTime;
-    private  LocalDateTime endTime;
+    private LocalDateTime endTime;
 
 }

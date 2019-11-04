@@ -4,6 +4,7 @@ package com.jarrvis.ticketbooking.ui.controller;
 import com.jarrvis.ticketbooking.application.service.ScreeningService;
 import com.jarrvis.ticketbooking.ui.dto.request.AddNewScreeningRequest;
 import com.jarrvis.ticketbooking.ui.dto.request.SearchScreeningRequest;
+import com.jarrvis.ticketbooking.ui.dto.response.ScreeningResource;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -70,7 +70,8 @@ public class ScreeningController {
     }
 
     /**
-     * REST operation to add new screening to multiplex offer
+     * REST operation to search for screenings in multiplex offer
+     * @return
      */
     @GetMapping()
     @ApiOperation(value = "Search for screenings in multiplex offer")
@@ -78,7 +79,7 @@ public class ScreeningController {
             @ApiResponse(code = 200, message = "Screenings found in multiplex offer"),
             @ApiResponse(code = 422, message = "Search screenings parameters contain validation errors"),
     })
-    public Flux<ResponseEntity> search(
+    public Flux<ScreeningResource> search(
             @ApiParam(value = "Screening details to be added to offer") @Valid SearchScreeningRequest searchScreeningRequest,
             BindingResult bindingResult) throws NoSuchMethodException, MethodArgumentNotValidException {
 
@@ -89,8 +90,7 @@ public class ScreeningController {
                     bindingResult);
         }
 
-        return screeningService.searchForScreenings(searchScreeningRequest.getStartTime(), searchScreeningRequest.getEndTime())
-                .map((status) -> ResponseEntity.created(URI.create("")).build());
+        return screeningService.searchForScreenings(searchScreeningRequest.getStartTime(), searchScreeningRequest.getEndTime());
     }
 
 }
