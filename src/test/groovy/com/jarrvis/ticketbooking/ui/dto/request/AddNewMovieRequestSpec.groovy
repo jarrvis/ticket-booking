@@ -23,6 +23,7 @@ class AddNewMovieRequestSpec extends Specification {
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("")
                     .description("Nice movie")
+                    .duration(120)
                     .firstScreeningDate(LocalDateTime.now())
                     .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
 
@@ -37,6 +38,7 @@ class AddNewMovieRequestSpec extends Specification {
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Joker")
                     .description("")
+                    .duration(120)
                     .firstScreeningDate(LocalDateTime.now())
                     .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
 
@@ -51,6 +53,7 @@ class AddNewMovieRequestSpec extends Specification {
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Joker")
                     .description("Joker")
+                    .duration(120)
                     .firstScreeningDate(null)
                     .lastScreeningDate(null).build()
 
@@ -66,6 +69,7 @@ class AddNewMovieRequestSpec extends Specification {
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Joker")
                     .description("Joker")
+                    .duration(120)
                     .firstScreeningDate(LocalDateTime.now())
                     .lastScreeningDate(LocalDateTime.now().minusHours(2)).build()
 

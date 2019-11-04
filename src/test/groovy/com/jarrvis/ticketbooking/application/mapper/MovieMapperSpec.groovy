@@ -1,4 +1,4 @@
-package com.jarrvis.ticketbooking.application
+package com.jarrvis.ticketbooking.application.mapper
 
 import com.jarrvis.ticketbooking.application.mappers.MovieMapper
 import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument
@@ -23,7 +23,7 @@ class MovieMapperSpec extends Specification {
             def description = "Joker"
             def firstScreeningDate = LocalDateTime.now().minusDays(2)
             def lastScreeningDate = LocalDateTime.now().plusDays(20)
-            def movie = new MovieDocument(name, description, firstScreeningDate, lastScreeningDate)
+            def movie = new MovieDocument(name, description, firstScreeningDate, lastScreeningDate, 120)
 
         when:
             MovieResource resource = movieMapper.toMovieResource(movie)
@@ -41,7 +41,7 @@ class MovieMapperSpec extends Specification {
             def description = "Joker"
             def firstScreeningDate = LocalDateTime.now().minusDays(2)
             def lastScreeningDate = LocalDateTime.now().plusDays(20)
-            def movies = [new MovieDocument(name, description, firstScreeningDate, lastScreeningDate)]
+            def movies = [new MovieDocument(name, description, firstScreeningDate, lastScreeningDate, 120)]
 
         when:
             List<MovieResource> resources = movieMapper.toMovieResources(movies)

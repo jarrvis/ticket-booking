@@ -14,7 +14,9 @@ or over swagger UI - in your browser go to:
 
 `http://localhost:8080/swagger-ui.html`
 
+## TODO
 
+- Move to CQRS with Domain Events as synchronization: two services (source and sink) - to scale separately. Use Kafka for pub/sub domain events
 
 ## Tests
 

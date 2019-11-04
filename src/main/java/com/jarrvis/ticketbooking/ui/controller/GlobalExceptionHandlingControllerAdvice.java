@@ -24,6 +24,20 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandlingControllerAdvice {
 
     /**
+     * General fallback exception handler, translating all not otherwise caught errors into HTTP status code 401.
+     *
+     * @param ex Exception
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public VndErrors handleAccessDeniedException(AccessDeniedException ex) {
+        log.error(ex.getMessage(), ex);
+        return new VndErrors("error", ex.getMessage());
+    }
+
+
+    /**
      * General fallback exception handler, translating all not otherwise caught errors into HTTP status code 409.
      *
      * @param ex Exception
@@ -31,7 +45,20 @@ public class GlobalExceptionHandlingControllerAdvice {
     @ExceptionHandler(AlreadyExistException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ResponseBody
-    public VndErrors handleServiceUnavailableException(AlreadyExistException ex) {
+    public VndErrors handleAlreadyExistException(AlreadyExistException ex) {
+        log.error(ex.getMessage(), ex);
+        return new VndErrors("error", ex.getMessage());
+    }
+
+    /**
+     * General fallback exception handler, translating all not otherwise caught errors into HTTP status code 409.
+     *
+     * @param ex Exception
+     */
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ResponseBody
+    public VndErrors handleIllegalStateException(IllegalStateException ex) {
         log.error(ex.getMessage(), ex);
         return new VndErrors("error", ex.getMessage());
     }
@@ -56,19 +83,6 @@ public class GlobalExceptionHandlingControllerAdvice {
 
         }
         return null;
-    }
-
-    /**
-     * General fallback exception handler, translating all not otherwise caught errors into HTTP status code 503.
-     *
-     * @param ex Exception
-     */
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    @ResponseBody
-    public VndErrors handleAccessDeniedException(AccessDeniedException ex) {
-        log.error(ex.getMessage(), ex);
-        return new VndErrors("error", ex.getMessage());
     }
 
     /**

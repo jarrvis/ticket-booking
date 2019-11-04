@@ -49,6 +49,7 @@ public class RoomController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Room added to multiplex"),
             @ApiResponse(code = 401, message = "Missing required authorization"),
+            @ApiResponse(code = 409, message = "Room with such name already exists"),
             @ApiResponse(code = 428, message = "Add new room body parameters contains validation errors"),
     })
     public Mono<ResponseEntity> add(

@@ -31,14 +31,14 @@ public class MovieService {
     private final MovieMapper movieMapper;
 
 
-    public Mono<MovieDocument> addNewMovie(String name, String description, LocalDateTime firstScreeningDate, LocalDateTime lastScreeningDate) {
+    public Mono<MovieDocument> addNewMovie(String name, String description, LocalDateTime firstScreeningDate, LocalDateTime lastScreeningDate, Long duration) {
         return this.movieMongoRepository.existsByName(name)
                 .doOnNext(exists -> {
                     if (exists) {
                         throw new AlreadyExistException(String.format("Movie with name: %s already exists", name));
                     }
                 })
-                .flatMap(exists -> Mono.just(new MovieDocument(name, description, firstScreeningDate, lastScreeningDate))
+                .flatMap(exists -> Mono.just(new MovieDocument(name, description, firstScreeningDate, lastScreeningDate,duration))
                 .flatMap(this.movieMongoRepository::save));
     }
 

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -25,15 +26,12 @@ public class ScreeningDocument {
     @NotNull
     private LocalDateTime endTime;
 
-    @NotNull
-    private MovieDocument movie;
+    @NotEmpty
+    private String movie;
 
-    @NotNull
-    private RoomDocument room;
+    @NotEmpty
+    private String room;
 
     private Table<Integer, Integer, Seat> seats;
 
-    Screening translate() {
-        return new Screening(startTime, endTime, this.movie.getName(), this.room.getName(), this.room.getRows(), this.room.getSeatsPerRow(), seats);
-    }
 }

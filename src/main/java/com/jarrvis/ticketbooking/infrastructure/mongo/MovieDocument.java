@@ -1,8 +1,8 @@
 package com.jarrvis.ticketbooking.infrastructure.mongo;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,4 +31,8 @@ public class MovieDocument {
 
     @NotNull
     private final LocalDateTime lastScreeningDate;
+
+    @NotNull
+    @Range(min=5, max = 200)
+    private final Long duration;
 }

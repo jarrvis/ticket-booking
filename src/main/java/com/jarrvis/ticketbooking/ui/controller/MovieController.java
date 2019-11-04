@@ -2,7 +2,6 @@ package com.jarrvis.ticketbooking.ui.controller;
 
 
 import com.jarrvis.ticketbooking.application.service.MovieService;
-import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument;
 import com.jarrvis.ticketbooking.ui.dto.request.AddNewMovieRequest;
 import com.jarrvis.ticketbooking.ui.dto.response.MovieResource;
 import io.swagger.annotations.ApiOperation;
@@ -12,7 +11,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,7 +49,7 @@ public class MovieController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Movie added to multiplex offer"),
             @ApiResponse(code = 401, message = "Missing required authorization"),
-            @ApiResponse(code = 409, message = "Missing required authorization"),
+            @ApiResponse(code = 409, message = "Movie with such name already exists"),
             @ApiResponse(code = 422, message = "Add new movie body parameters contains validation errors"),
     })
     public Mono<ResponseEntity> add(
@@ -65,7 +63,7 @@ public class MovieController {
                     bindingResult);
         }
 
-        return movieService.addNewMovie(addNewMovieRequest.getName(), addNewMovieRequest.getDescription(), addNewMovieRequest.getFirstScreeningDate(), addNewMovieRequest.getLastScreeningDate())
+        return movieService.addNewMovie(addNewMovieRequest.getName(), addNewMovieRequest.getDescription(), addNewMovieRequest.getFirstScreeningDate(), addNewMovieRequest.getLastScreeningDate(), addNewMovieRequest.getDuration())
                 .map((status) -> ResponseEntity.created(URI.create("")).build());
     }
 

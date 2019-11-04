@@ -29,7 +29,7 @@ public class Screening {
     private final LocalDateTime endTime;
 
     @NotEmpty
-    private final String name;
+    private final String movie;
 
     @NotEmpty
     private final String room;

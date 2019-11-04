@@ -1,12 +1,18 @@
 package com.jarrvis.ticketbooking.infrastructure.mongo;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 
-public interface ScreeningMongoRepository extends MongoRepository<ScreeningDocument, String> {
+public interface ScreeningMongoRepository extends ReactiveMongoRepository<ScreeningDocument, String> {
 
-    List<ScreeningDocument> findByStartTimeBetween(LocalDateTime startDate, LocalDateTime endDate);
+    Flux<ScreeningDocument> findByStartTimeBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    Mono<Boolean> existsByRoomAndStartTimeBeforeAndEndTimeAfter(@NotEmpty String room, @NotNull LocalDateTime startTime, @NotNull LocalDateTime startTime2);
+
 
 }

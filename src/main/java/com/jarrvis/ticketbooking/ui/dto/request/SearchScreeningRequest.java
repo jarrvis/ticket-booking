@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -17,27 +15,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @DateRange(
-        message = "First screening date cannot be after last screening date",
-        startDateFieldName = "firstScreeningDate",
-        endDateFieldName = "lastScreeningDate")
-public class AddNewMovieRequest {
-
-    @NotEmpty
-    private String name;
-
-    @NotEmpty
-    private String description;
+        message = "Start date cannot be after end date",
+        startDateFieldName = "startTime",
+        endDateFieldName = "endTime")
+public class SearchScreeningRequest {
 
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime firstScreeningDate;
+    private LocalDateTime startTime;
 
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime lastScreeningDate;
-
-    @NotNull
-    @Range(min = 5, max = 200)
-    private Long duration;
+    private LocalDateTime endTime;
 
 }

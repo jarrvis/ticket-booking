@@ -1,13 +1,10 @@
-package com.jarrvis.ticketbooking.application;
+package com.jarrvis.ticketbooking.application.mappers;
 
 
 import com.jarrvis.ticketbooking.domain.Screening;
-import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument;
-import com.jarrvis.ticketbooking.infrastructure.mongo.RoomDocument;
 import com.jarrvis.ticketbooking.infrastructure.mongo.ScreeningDocument;
 import com.jarrvis.ticketbooking.ui.dto.response.ScreeningResource;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
@@ -18,9 +15,7 @@ public interface ScreeningMapper {
 
     ScreeningMapper INSTANCE = Mappers.getMapper( ScreeningMapper.class );
 
-    @Mappings({
-            @Mapping(source = "movie.name", target = "title"),
-    })
+
     ScreeningResource toScreeningResource(ScreeningDocument screeningDocument);
 
     @Mappings({
@@ -28,10 +23,6 @@ public interface ScreeningMapper {
     })
     List<ScreeningResource> toScreeningResources(List<ScreeningDocument> screeningDocuments);
 
-    @Mappings(value = {
-            @Mapping(source = "movieDocument", target = "movie"),
-            @Mapping(source = "roomDocument", target = "room"),
-            @Mapping(target = "id", ignore = true),
-    })
-    ScreeningDocument toScreeningDocument(Screening screening, MovieDocument movieDocument, RoomDocument roomDocument);
+
+    ScreeningDocument toScreeningDocument(Screening screening);
 }

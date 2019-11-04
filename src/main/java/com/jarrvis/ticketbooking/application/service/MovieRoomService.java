@@ -1,7 +1,6 @@
 package com.jarrvis.ticketbooking.application.service;
 
 import com.jarrvis.ticketbooking.application.mappers.RoomMapper;
-import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument;
 import com.jarrvis.ticketbooking.infrastructure.mongo.RoomDocument;
 import com.jarrvis.ticketbooking.infrastructure.mongo.RoomMongoRepository;
 import com.jarrvis.ticketbooking.ui.dto.response.RoomResource;

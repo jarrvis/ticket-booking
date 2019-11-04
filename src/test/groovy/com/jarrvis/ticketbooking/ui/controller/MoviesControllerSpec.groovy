@@ -72,6 +72,7 @@ class MoviesControllerSpec extends Specification {
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Joker")
                     .description("Joker")
+                    .duration(120)
                     .firstScreeningDate(LocalDateTime.now())
                     .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
         when: 'saving movie'
@@ -108,6 +109,7 @@ class MoviesControllerSpec extends Specification {
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Batman")
                     .description("Batman")
+                    .duration(120)
                     .firstScreeningDate(LocalDateTime.now())
                     .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
         when: 'saving movie'
@@ -140,6 +142,7 @@ class MoviesControllerSpec extends Specification {
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Avengers")
                     .description("Avengers")
+                    .duration(120)
                     .firstScreeningDate(LocalDateTime.now())
                     .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
         when: 'saving movie'
