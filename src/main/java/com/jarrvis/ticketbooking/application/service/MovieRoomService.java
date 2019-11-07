@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class MovieRoomService {
 
 

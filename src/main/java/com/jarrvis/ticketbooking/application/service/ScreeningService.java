@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ScreeningService {
 
 
@@ -40,8 +40,9 @@ public class ScreeningService {
     private final ScreeningMapper screeningMapper;
 
     public Flux<ScreeningResource> searchForScreenings(LocalDateTime startTime, LocalDateTime endTme) {
-        return this.screeningRepository.findByStartTimeBetween(startTime, endTme)
-                .map(this.screeningMapper::toScreeningResource);
+        return this.screeningRepository.findByStartTimeBetweenOrderByMovieAscStartTimeAsc(startTime, endTme)
+                .map(screening -> this.screeningMapper.toScreeningResource(screening.mutateTo()));
+
     }
 
     public Mono<ScreeningResource> addNewScreening(LocalDateTime startTime, String movieName, String roomName) {
@@ -79,7 +80,7 @@ public class ScreeningService {
                 })
                 .flatMap(screening -> Mono.just(this.screeningMapper.toScreeningDocument(screening)))
                 .flatMap(this.screeningRepository::save)
-                .map(this.screeningMapper::toScreeningResource);
+                .map(screening -> this.screeningMapper.toScreeningResource(screening.mutateTo()));
     }
 
 }

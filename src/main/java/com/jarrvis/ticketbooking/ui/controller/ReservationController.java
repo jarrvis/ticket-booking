@@ -1,7 +1,11 @@
 package com.jarrvis.ticketbooking.ui.controller;
 
 
+import com.jarrvis.ticketbooking.application.service.ReservationService;
+import com.jarrvis.ticketbooking.domain.Reservation;
+import com.jarrvis.ticketbooking.ui.dto.request.ConfirmReservationCommand;
 import com.jarrvis.ticketbooking.ui.dto.request.CreateReservationCommand;
+import com.jarrvis.ticketbooking.ui.dto.response.ReservationResource;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -30,15 +34,16 @@ import java.net.URI;
 @RequestMapping(value = "/reservations")
 public class ReservationController {
 
-//    public ReservationController(
-//            final GitRepositoryService gitRepositoryService) {
-//        this.gitRepositoryService = gitRepositoryService;
-//    }
-//
-//    private final GitRepositoryService gitRepositoryService;
+    public ReservationController(
+            final ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
+
+    private final ReservationService reservationService;
 
     /**
      * REST operation to create new reservation in multiplex
+     * @return
      */
     @PostMapping()
     @ApiOperation(value = "Create ticket reservation in multiplex")
@@ -47,7 +52,7 @@ public class ReservationController {
             @ApiResponse(code = 409, message = "Movie does not exist or room does not exist or screening overlaps with existing screenings"),
             @ApiResponse(code = 422, message = "Create reservation parameters contains validation errors"),
     })
-    public Mono<ResponseEntity> reserve(
+    public Mono<ResponseEntity<ReservationResource>> reserve(
             @ApiParam(value = "Details to create a reservation") @RequestBody @Valid CreateReservationCommand createReservationCommand,
             BindingResult bindingResult) throws NoSuchMethodException, MethodArgumentNotValidException {
 
@@ -57,7 +62,13 @@ public class ReservationController {
                     new MethodParameter(this.getClass().getMethod("reserve", CreateReservationCommand.class, BindingResult.class), 0),
                     bindingResult);
         }
-            return null;
+            return reservationService.reserve(
+                    createReservationCommand.getScreeningId(),
+                    createReservationCommand.getName(),
+                    createReservationCommand.getSurname(),
+                    createReservationCommand.getTickets())
+
+                    .map((resource) -> ResponseEntity.created(URI.create("")).body(resource));
     }
 
     /**
@@ -69,17 +80,17 @@ public class ReservationController {
             @ApiResponse(code = 200, message = "Reservation confirmed"),
             @ApiResponse(code = 404, message = "Reservation not found"),
     })
-    public Mono<ResponseEntity> confirm(
-            @ApiParam(value = "Details to create a reservation") @RequestBody @Valid CreateReservationCommand createReservationCommand,
+    public Mono<ReservationResource> confirm(
+            @ApiParam(value = "Details to create a reservation") @RequestBody @Valid ConfirmReservationCommand confirmReservationCommand,
             BindingResult bindingResult) throws NoSuchMethodException, MethodArgumentNotValidException {
 
-        log.debug("Confirm ticket reservation request received: {}", createReservationCommand);
+        log.debug("Confirm ticket reservation request received: {}", confirmReservationCommand);
         if (bindingResult.hasErrors()) {
             throw new MethodArgumentNotValidException(
-                    new MethodParameter(this.getClass().getMethod("confirm", CreateReservationCommand.class, BindingResult.class), 0),
+                    new MethodParameter(this.getClass().getMethod("confirm", ConfirmReservationCommand.class, BindingResult.class), 0),
                     bindingResult);
         }
-        return null;
+        return reservationService.confirm(confirmReservationCommand.getReservationId(), confirmReservationCommand.getToken());
     }
 
 }

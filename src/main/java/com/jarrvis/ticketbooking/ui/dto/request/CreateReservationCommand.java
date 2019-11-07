@@ -1,15 +1,19 @@
 package com.jarrvis.ticketbooking.ui.dto.request;
 
+import com.jarrvis.ticketbooking.domain.TicketType;
+import io.vavr.Tuple3;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -21,15 +25,34 @@ public class CreateReservationCommand {
     private String screeningId;
 
     @NotEmpty
-    @Pattern(regexp = "^[A-Z].*\\p{L}")
+    @Pattern(regexp = "([\\p{Lu}][\\p{Ll}]*)")
     private String name;
 
     @NotEmpty
-    @Pattern(regexp = "^[A-Z].*\\p{L}((-[A-Z].*\\p{L})?)")
+    @Pattern(regexp = "^([\\p{Lu}][\\p{Ll}]*(-[\\p{Lu}][\\p{Ll}]*)?)")
     private String surname;
 
     @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime startTime;
+    private Set<Ticket> tickets;
+
+    public Set<Tuple3<Integer,Integer,TicketType>> getTickets() {
+        return this.tickets.stream()
+                .map(ticket -> new Tuple3<>(ticket.rowNumber, ticket.seatNumber, ticket.ticketType))
+                .collect(Collectors.toSet());
+
+    }
+
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    @NoArgsConstructor
+    @Getter
+    static class Ticket {
+
+        Integer rowNumber;
+        Integer seatNumber;
+
+        @EqualsAndHashCode.Exclude
+        TicketType ticketType;
+    }
 
 }

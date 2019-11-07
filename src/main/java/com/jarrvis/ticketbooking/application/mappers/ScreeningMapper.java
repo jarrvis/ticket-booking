@@ -5,6 +5,7 @@ import com.jarrvis.ticketbooking.domain.Screening;
 import com.jarrvis.ticketbooking.infrastructure.mongo.ScreeningDocument;
 import com.jarrvis.ticketbooking.ui.dto.response.ScreeningResource;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
@@ -15,14 +16,10 @@ public interface ScreeningMapper {
 
     ScreeningMapper INSTANCE = Mappers.getMapper( ScreeningMapper.class );
 
-
-    ScreeningResource toScreeningResource(ScreeningDocument screeningDocument);
-
     @Mappings({
-            //@Mapping(source = "movie.name", target = "title"),
+            @Mapping(target = "freePlaces", expression = "java(screening.availableSeats())"),
     })
-    List<ScreeningResource> toScreeningResources(List<ScreeningDocument> screeningDocuments);
-
+    ScreeningResource toScreeningResource(Screening screening);
 
     ScreeningDocument toScreeningDocument(Screening screening);
 }

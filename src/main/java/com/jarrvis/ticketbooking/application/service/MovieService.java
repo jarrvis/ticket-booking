@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class MovieService {
 
 
