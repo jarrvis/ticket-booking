@@ -66,7 +66,7 @@ public class ScreeningController {
         }
 
         return screeningService.addNewScreening(addNewScreeningRequest.getStartTime(), addNewScreeningRequest.getMovieName(), addNewScreeningRequest.getRoomName())
-                .map((status) -> ResponseEntity.created(URI.create("")).build());
+                .flatMap((resource) -> Mono.just(ResponseEntity.created(URI.create("")).body(resource)));
     }
 
     /**

@@ -6,10 +6,7 @@ import io.vavr.Tuple2;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -25,27 +22,21 @@ public class Screening {
     @Getter
     private String id;
 
-    @NotNull
     @Getter
     private final LocalDateTime startTime;
 
-    @NotNull
     @Getter
     private final LocalDateTime endTime;
 
-    @NotEmpty
     @Getter
     private final String movie;
 
-    @NotEmpty
     @Getter
     private final String room;
 
-    @Range(min = 1, max = 30)
     @Getter
     private final Integer rows;
 
-    @Range(min = 1, max = 30)
     @Getter
     private final Integer seatsPerRow;
 
@@ -61,8 +52,10 @@ public class Screening {
         this.rows = rows;
         this.seatsPerRow = seatsPerRow;
 
-        this.seats = HashBasedTable.create(rows, seatsPerRow);
-        seats.forEach((key, value) -> value.forEach((key1, value1) -> this.seats.put(key, key1, value1)));
+        if (seats != null) {
+            this.seats = HashBasedTable.create(rows, seatsPerRow);
+            seats.forEach((key, value) -> value.forEach((key1, value1) -> this.seats.put(key, key1, value1)));
+        }
     }
 
     public Map<Integer, Map<Integer, Seat>> getSeats() {
@@ -181,7 +174,9 @@ public class Screening {
      */
     private boolean isSingleSeatLeftAfterBooking(int row, int place) {
         if (place + 2 <= this.seatsPerRow) {
-            return isSeatFree(row, place + 1) && !isSeatFree(row, place + 2);
+            if (isSeatFree(row, place + 1) && !isSeatFree(row, place + 2)) {
+                return true;
+            }
         }
         if (place - 2 > 0) {
             return isSeatFree(row, place - 1) && !isSeatFree(row, place - 2);

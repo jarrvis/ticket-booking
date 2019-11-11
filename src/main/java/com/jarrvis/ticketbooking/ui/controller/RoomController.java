@@ -64,7 +64,7 @@ public class RoomController {
         }
 
         return movieRoomService.addNewRoom(addNewRoomRequest.getName(), addNewRoomRequest.getRows(), addNewRoomRequest.getSeatsPerRow())
-                .map((status) -> ResponseEntity.created(URI.create("")).build());
+                .flatMap((status) -> Mono.just(ResponseEntity.created(URI.create("")).build()));
     }
 
     /**

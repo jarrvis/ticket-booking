@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @AllArgsConstructor
 @ToString(includeFieldNames = false)
-public class Price {
+class Price {
 
     BigDecimal value;
     Currency currency;

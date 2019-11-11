@@ -1,18 +1,21 @@
-package com.jarrvis.ticketbooking.ui.dto.response;
+package com.jarrvis.ticketbooking.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class MovieResource {
+public class Movie {
 
     private String name;
+
     private String description;
+
     private LocalDateTime firstScreeningDate;
+
     private LocalDateTime lastScreeningDate;
+
+    private Long duration;
 }

@@ -2,7 +2,6 @@ package com.jarrvis.ticketbooking.ui.controller;
 
 
 import com.jarrvis.ticketbooking.application.service.ReservationService;
-import com.jarrvis.ticketbooking.domain.Reservation;
 import com.jarrvis.ticketbooking.ui.dto.request.ConfirmReservationCommand;
 import com.jarrvis.ticketbooking.ui.dto.request.CreateReservationCommand;
 import com.jarrvis.ticketbooking.ui.dto.response.ReservationResource;
@@ -43,6 +42,7 @@ public class ReservationController {
 
     /**
      * REST operation to create new reservation in multiplex
+     *
      * @return
      */
     @PostMapping()
@@ -62,13 +62,13 @@ public class ReservationController {
                     new MethodParameter(this.getClass().getMethod("reserve", CreateReservationCommand.class, BindingResult.class), 0),
                     bindingResult);
         }
-            return reservationService.reserve(
-                    createReservationCommand.getScreeningId(),
-                    createReservationCommand.getName(),
-                    createReservationCommand.getSurname(),
-                    createReservationCommand.getTickets())
+        return reservationService.reserve(
+                createReservationCommand.getScreeningId(),
+                createReservationCommand.getName(),
+                createReservationCommand.getSurname(),
+                createReservationCommand.getTickets())
 
-                    .map((resource) -> ResponseEntity.created(URI.create("")).body(resource));
+                .flatMap((resource) -> Mono.just(ResponseEntity.created(URI.create("")).body(resource)));
     }
 
     /**

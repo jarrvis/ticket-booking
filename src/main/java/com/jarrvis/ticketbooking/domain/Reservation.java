@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -35,23 +33,18 @@ public class Reservation {
     private LocalDateTime createdAt;
 
     @Getter
-    @NotEmpty
     private final String screeningId;
 
     @Getter
-    @NotNull
     private final LocalDateTime screeningStartTime;
 
     @Getter
-    @NotEmpty
     private final String name;
 
     @Getter
-    @NotEmpty
     private final String surname;
 
     @Getter
-    @NotNull
     private final Set<Ticket> seats;
 
     @Getter
@@ -94,6 +87,9 @@ public class Reservation {
         LocalDateTime quarterAfterReservationTime = this.createdAt.plusMinutes(15);
         LocalDateTime quarterBeforeScreeningTime = screeningStartTime.minusMinutes(15);
         this.expiresAt = quarterAfterReservationTime.isBefore(quarterBeforeScreeningTime) ? quarterAfterReservationTime : quarterBeforeScreeningTime;
+        if (LocalDateTime.now().isAfter(this.expiresAt)) {
+            throw new IllegalStateException("Reservation already expired");
+        }
     }
 
     public void cancel() {
@@ -101,6 +97,12 @@ public class Reservation {
     }
 
     public void confirm() {
+        if (this.status == ReservationStatus.CANCELED) {
+            throw new IllegalStateException("Cannot confirm reservation. Reservation was already cancelled");
+        }
+        if (this.status == ReservationStatus.CONFIRMED) {
+            throw new IllegalStateException("Cannot confirm reservation. Reservation was already confirmed");
+        }
         if (this.expiresAt != null && LocalDateTime.now().isAfter(this.expiresAt)) {
             throw new IllegalStateException("Cannot confirm reservation. Reservation already expired");
         }
