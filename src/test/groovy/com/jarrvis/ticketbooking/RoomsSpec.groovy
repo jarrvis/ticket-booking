@@ -1,4 +1,4 @@
-package com.jarrvis.ticketbooking.ui.controller
+package com.jarrvis.ticketbooking
 
 import com.jarrvis.ticketbooking.ui.configuration.ApplicationConfig
 import com.jarrvis.ticketbooking.ui.dto.request.AddNewRoomRequest
@@ -18,7 +18,7 @@ import static java.nio.charset.StandardCharsets.UTF_8
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class RoomsControllerSpec extends Specification {
+class RoomsSpec extends Specification {
 
 
     @Autowired
@@ -63,9 +63,7 @@ class RoomsControllerSpec extends Specification {
                     .expectBody().json("[]")
     }
 
-    def "should not be possible to save room, having required authorization"() {
-        setup:
-
+    def "should be possible to save room, having required authorization"() {
         given:
             def addNewRoomRequest = AddNewRoomRequest.builder()
                     .name("Dream")
@@ -119,6 +117,7 @@ class RoomsControllerSpec extends Specification {
         then:
             result
                     .expectStatus().isCreated()
+
         and: 'trying to save same room again'
             def result2 = webTestClient
                     .post()

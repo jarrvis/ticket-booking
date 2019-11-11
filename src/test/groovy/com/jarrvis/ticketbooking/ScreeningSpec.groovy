@@ -1,10 +1,9 @@
-package com.jarrvis.ticketbooking.ui.controller
+package com.jarrvis.ticketbooking
 
-
-import com.jarrvis.ticketbooking.infrastructure.mongo.MovieDocument
-import com.jarrvis.ticketbooking.infrastructure.mongo.MovieMongoRepository
-import com.jarrvis.ticketbooking.infrastructure.mongo.RoomDocument
-import com.jarrvis.ticketbooking.infrastructure.mongo.RoomMongoRepository
+import com.jarrvis.ticketbooking.domain.Movie
+import com.jarrvis.ticketbooking.domain.MovieRepository
+import com.jarrvis.ticketbooking.domain.Room
+import com.jarrvis.ticketbooking.domain.RoomRepository
 import com.jarrvis.ticketbooking.ui.configuration.ApplicationConfig
 import com.jarrvis.ticketbooking.ui.dto.request.AddNewScreeningRequest
 import com.jarrvis.ticketbooking.ui.dto.response.MovieResource
@@ -25,7 +24,7 @@ import static java.nio.charset.StandardCharsets.UTF_8
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class ScreeningControllerSpec extends Specification {
+class ScreeningSpec extends Specification {
 
 
     @Autowired
@@ -35,10 +34,11 @@ class ScreeningControllerSpec extends Specification {
     private ApplicationConfig applicationConfig
 
     @Autowired
-    private MovieMongoRepository movieMongoRepository
+    private MovieRepository movieRepository
 
     @Autowired
-    private RoomMongoRepository roomMongoRepository
+    private RoomRepository roomRepository
+
 
     def setup() {
 
@@ -50,7 +50,7 @@ class ScreeningControllerSpec extends Specification {
 
     def "should not be able to change state of screenings without authorization"() {
 
-        when: 'requesting movies api'
+        when: 'requesting screenings api'
             def result = webTestClient
                     .post()
                     .uri("/screenings")
@@ -63,7 +63,7 @@ class ScreeningControllerSpec extends Specification {
 
     def "should be able to search for screenings without authorization"() {
 
-        when: 'requesting movies api'
+        when: 'requesting screenings api'
             def result = webTestClient
                     .get()
                     .uri({ uriBuilder ->
@@ -81,7 +81,7 @@ class ScreeningControllerSpec extends Specification {
 
     def "should receive 422 status when accessing api with invalid request parameters"() {
 
-        when: 'requesting movies api'
+        when: 'requesting screenings api'
             def result = webTestClient
                     .post()
                     .uri("/screenings")
@@ -97,7 +97,7 @@ class ScreeningControllerSpec extends Specification {
 
     def "should not be possible to save screening, if room does not exist"() {
         setup:
-            this.movieMongoRepository.save(new MovieDocument("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)).block()
+            this.movieRepository.save(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)).block()
             def addNewScreeningRequest = AddNewScreeningRequest.builder()
                     .movieName("Joker")
                     .roomName("Not existing movie")
@@ -119,7 +119,7 @@ class ScreeningControllerSpec extends Specification {
 
     def "should not be possible to save screening, if movie does not exist"() {
         setup:
-            this.roomMongoRepository.save(new RoomDocument("Dream", 10, 15)).block()
+            this.roomRepository.save(new Room("Dream", 10, 15)).block()
             def addNewScreeningRequest = AddNewScreeningRequest.builder()
                     .movieName("Not existing movie")
                     .roomName("Dream")
@@ -141,8 +141,8 @@ class ScreeningControllerSpec extends Specification {
 
     def "should be possible to save screening, if movie and room exist"() {
         setup:
-            this.movieMongoRepository.save(new MovieDocument("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)).block()
-            this.roomMongoRepository.save(new RoomDocument("Dream", 10, 15)).block()
+            this.movieRepository.save(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)).block()
+            this.roomRepository.save(new Room("Dream", 10, 15)).block()
             def addNewScreeningRequest = AddNewScreeningRequest.builder()
                     .movieName("Joker")
                     .roomName("Dream")
@@ -173,8 +173,8 @@ class ScreeningControllerSpec extends Specification {
                     .roomName(roomName)
                     .startTime(startTime)
                     .build()
-            this.movieMongoRepository.save(new MovieDocument("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), duration)).block()
-            this.roomMongoRepository.save(new RoomDocument(roomName, 10, 15)).block()
+            this.movieRepository.save(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), duration)).block()
+            this.roomRepository.save(new Room(roomName, 10, 15)).block()
         when: 'saving screening 1'
             def result = webTestClient
                     .post()
@@ -216,8 +216,8 @@ class ScreeningControllerSpec extends Specification {
                     .roomName("Dream")
                     .startTime(startTime)
                     .build()
-            this.movieMongoRepository.save(new MovieDocument("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), duration)).block()
-            this.roomMongoRepository.save(new RoomDocument("Dream", 10, 15)).block()
+            this.movieRepository.save(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), duration)).block()
+            this.roomRepository.save(new Room("Dream", 10, 15)).block()
         when: 'saving screening'
             def result = webTestClient
                     .post()

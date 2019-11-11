@@ -1,4 +1,4 @@
-package com.jarrvis.ticketbooking.ui.controller
+package com.jarrvis.ticketbooking
 
 
 import com.jarrvis.ticketbooking.ui.configuration.ApplicationConfig
@@ -20,7 +20,7 @@ import static java.nio.charset.StandardCharsets.UTF_8
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class MoviesControllerSpec extends Specification {
+class MoviesSpec extends Specification {
 
 
     @Autowired
@@ -65,9 +65,7 @@ class MoviesControllerSpec extends Specification {
                     .expectBody().json("[]")
     }
 
-    def "should not be possible to save movie, having required authorization"() {
-        setup:
-
+    def "should be possible to save movie, having required authorization"() {
         given:
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Joker")
