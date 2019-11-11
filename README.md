@@ -72,6 +72,10 @@ Run:
 
 `./gradlew devInit`
 
+Add --debug flag to see requests and responses in console:
+
+`./gradlew devInit --debug`
+
 ## TODO
 
 - (Other repo) Move to CQRS with Domain Events as synchronization: two services (source and sink) - to scale separately. Use Kafka/RabbitMQ for pub/sub domain events
