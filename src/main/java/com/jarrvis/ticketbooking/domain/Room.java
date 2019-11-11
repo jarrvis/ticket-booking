@@ -1,10 +1,8 @@
 package com.jarrvis.ticketbooking.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 
-@Getter
-@AllArgsConstructor
+@Value
 public class Room {
 
     private String name;

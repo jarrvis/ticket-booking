@@ -1,12 +1,10 @@
 package com.jarrvis.ticketbooking.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 
-@Getter
-@AllArgsConstructor
+@Value
 public class Movie {
 
     private String name;

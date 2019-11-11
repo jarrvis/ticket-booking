@@ -1,22 +1,52 @@
 # ticket-booking
 
+## DDD & TDD
+
+This small repo is a showcase of domain driven development and test driven development. A few DDD concepts implemented here:
+
+- No anemic domain models. Domain objects are 'doing things'. Moreover they do most important things in app. They carry whole business logic
+- Application structure: domain, infrastructure, application, ui (aka presentation)
+- Application does not depend on any DB. Persistence layer implementation can be 'replaced' at any time. Currently used MongoDB is only one of implementations that can be used
+- Services (actually application services, not domain services) are used for executing abstract persistence methods and domain methods
+- Use of value objects e.g. Price, Movie, Room
+- Use of ports (like application services e.g. ReservationService or repositories e.g. ScreeningRepository) and adapters (like REST endpoint for Screenings or repository implementation e.g. MovieMongoRepository)
+
+For some testing rules see:
+
+https://github.com/jarrvis/ticket-booking/blob/master/src/test/groovy/README.MD
+
 ## Run
 
 to run application:
 
 `./gradlew bootRun`
 
-and and then to test it:
+and then to test it:
 
-`curl http://localhost:8080/repositories/{owner}/{repositoryName}`
+`curl "http://localhost:8080/screenings?startTime=2019-11-11T14%3A00&endTime=2019-11-11T16%3A30"`
+(search for screenings on day 2019-11-11 from 14:00 to 16:30)
 
 or over swagger UI - in your browser go to:
 
 `http://localhost:8080/swagger-ui.html`
 
-## TODO
+### Authorization
 
-- Move to CQRS with Domain Events as synchronization: two services (source and sink) - to scale separately. Use Kafka for pub/sub domain events
+some operations require basic auth:
+
+ - user: admin
+ - pass: admin
+ 
+ example - to add new movie to multiplex (only admin can do it):
+ 
+ `curl "http://admin:admin@localhost:8080/movies"`
+ 
+ or
+ 
+ `curl "http://localhost:8080/movies" -H "Authorization: Basic YWRtaW46YWRtaW4="`
+
+Accessing swagger ui also requires basic auth. After correct authorization all requests done from swagger ui will automatically carry basic auth header
+
 
 ## Tests
 
@@ -26,11 +56,26 @@ to run all tests:
 
 to run all tests in file:
 
-`./gradlew cleanTest :test --tests "com.recruit.githubrepositories.api.controller.GitRepositoryControllerSpec"`
+`./gradlew cleanTest :test --tests "com.jarrvis.ticketbooking.domain.ScreeningSpec"`
 
 to run specific test:
 
-`./gradlew cleanTest :test --tests "com.recruit.githubrepositories.service.GithubRepositoryServiceSpec.Github repository service should return RepositoryDetails from cache"`
+`./gradlew cleanTest :test --tests "com.jarrvis.ticketbooking.domain.ScreeningSpec.Can not book seat leaving one seat free between reserved seats"`
+
+Integration tests are using in memory mongoDB. They (should) cover all possible user journeys and can be used as a sample of how application works
+
+## Init
+
+Apart from integration tests, local manual tests can be done with sample data. To make it simple an init script was prepared to initialize app with sample data.
+
+Run:
+
+`./gradlew devInit`
+
+## TODO
+
+- (Other repo) Move to CQRS with Domain Events as synchronization: two services (source and sink) - to scale separately. Use Kafka/RabbitMQ for pub/sub domain events
+
 
 ## Requirements
 
