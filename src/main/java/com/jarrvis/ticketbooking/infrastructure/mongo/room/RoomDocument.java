@@ -1,5 +1,6 @@
-package com.jarrvis.ticketbooking.infrastructure.mongo;
+package com.jarrvis.ticketbooking.infrastructure.mongo.room;
 
+import com.jarrvis.ticketbooking.domain.Room;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -29,4 +30,7 @@ public class RoomDocument {
     @Range(min = 1, max = 30)
     private final int seatsPerRow;
 
+    public Room mutateTo() {
+        return new Room(name, rows, seatsPerRow);
+    }
 }

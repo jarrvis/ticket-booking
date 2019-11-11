@@ -1,8 +1,7 @@
 package com.jarrvis.ticketbooking.application.service;
 
-import com.jarrvis.ticketbooking.application.mappers.RoomMapper;
-import com.jarrvis.ticketbooking.infrastructure.mongo.RoomDocument;
-import com.jarrvis.ticketbooking.infrastructure.mongo.RoomMongoRepository;
+import com.jarrvis.ticketbooking.domain.Room;
+import com.jarrvis.ticketbooking.domain.RoomRepository;
 import com.jarrvis.ticketbooking.ui.dto.response.RoomResource;
 import com.jarrvis.ticketbooking.ui.exception.AlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
@@ -18,30 +17,28 @@ public class MovieRoomService {
 
 
     public MovieRoomService(
-            final RoomMongoRepository roomMongoRepository,
-            final RoomMapper roomMapper
+            final RoomRepository roomRepository
     ) {
-        this.roomMongoRepository = roomMongoRepository;
-        this.roomMapper = roomMapper;
+        this.roomRepository = roomRepository;
     }
 
-    private final RoomMongoRepository roomMongoRepository;
-    private final RoomMapper roomMapper;
+    private final RoomRepository roomRepository;
 
 
-    public Mono<RoomDocument> addNewRoom(String name, int rows, int seatsPerRow) {
-        return this.roomMongoRepository.existsByName(name)
-                .doOnNext(exists -> {
+    public Mono<Boolean> addNewRoom(String name, int rows, int seatsPerRow) {
+        return this.roomRepository.existsByName(name)
+                .flatMap(exists -> {
                     if (exists) {
                         throw new AlreadyExistException(String.format("Room with name: %s already exists", name));
                     }
-                })
-                .flatMap(exists -> Mono.just(new RoomDocument(name, rows, seatsPerRow))
-                        .flatMap(this.roomMongoRepository::save));
+                    return this.roomRepository.save(new Room(name, rows, seatsPerRow))
+                            .flatMap(room -> Mono.just(true));
+                });
     }
 
     public Flux<RoomResource> listAllRooms() {
-        return this.roomMongoRepository.findAll().map(this.roomMapper::toRoomResource);
+        return this.roomRepository.findAll()
+                .flatMap(domain -> Mono.just(new RoomResource(domain.getName(), domain.getRows(), domain.getSeatsPerRow())));
 
     }
 

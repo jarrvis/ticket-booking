@@ -1,5 +1,6 @@
-package com.jarrvis.ticketbooking.infrastructure.mongo;
+package com.jarrvis.ticketbooking.infrastructure.mongo.movie;
 
+import com.jarrvis.ticketbooking.domain.Movie;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Range;
@@ -35,4 +36,8 @@ public class MovieDocument {
     @NotNull
     @Range(min=5, max = 200)
     private final Long duration;
+
+    public Movie mutateTo() {
+        return new Movie(name, description, firstScreeningDate, lastScreeningDate, duration);
+    }
 }

@@ -1,14 +1,14 @@
-package com.jarrvis.ticketbooking.infrastructure.mongo;
+package com.jarrvis.ticketbooking.infrastructure.mongo.reservation;
 
 import com.jarrvis.ticketbooking.domain.Currency;
 import com.jarrvis.ticketbooking.domain.Reservation;
 import com.jarrvis.ticketbooking.domain.ReservationStatus;
 import com.jarrvis.ticketbooking.domain.Ticket;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -17,6 +17,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Document(collection = "reservations")
 public class ReservationDocument {
 

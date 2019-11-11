@@ -1,4 +1,4 @@
-package com.jarrvis.ticketbooking.infrastructure.mongo;
+package com.jarrvis.ticketbooking.infrastructure.mongo.room;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;

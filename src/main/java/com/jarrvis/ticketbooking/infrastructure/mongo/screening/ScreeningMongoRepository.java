@@ -1,4 +1,4 @@
-package com.jarrvis.ticketbooking.infrastructure.mongo;
+package com.jarrvis.ticketbooking.infrastructure.mongo.screening;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
@@ -12,7 +12,6 @@ public interface ScreeningMongoRepository extends ReactiveMongoRepository<Screen
 
     Flux<ScreeningDocument> findByStartTimeBetweenOrderByMovieAscStartTimeAsc(LocalDateTime startDate, LocalDateTime endDate);
 
-    Mono<Boolean> existsByRoomAndStartTimeBeforeAndEndTimeAfter(@NotEmpty String room, @NotNull LocalDateTime startTime, @NotNull LocalDateTime startTime2);
-
+    Mono<Boolean> existsByRoomAndStartTimeBeforeAndEndTimeAfter(String room, LocalDateTime startTime, LocalDateTime endTime);
 
 }
