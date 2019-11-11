@@ -26,7 +26,7 @@ class CreateReservationCommandSpec extends Specification {
             def createReservationCommand = CreateReservationCommand.builder()
                     .name(name)
                     .surname("Test")
-                    .startTime(LocalDateTime.now())
+                    .screeningId("1234")
                     .build()
 
             Set<ConstraintViolation<CreateReservationCommand>> validationResults = validator.validate(createReservationCommand)
@@ -48,7 +48,7 @@ class CreateReservationCommandSpec extends Specification {
             def createReservationCommand = CreateReservationCommand.builder()
                     .name("Jan")
                     .surname(surname)
-                    .startTime(LocalDateTime.now())
+                    .screeningId("1234")
                     .build()
 
             Set<ConstraintViolation<CreateReservationCommand>> validationResults = validator.validate(createReservationCommand)
