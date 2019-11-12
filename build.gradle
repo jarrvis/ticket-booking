@@ -1,5 +1,4 @@
 import io.github.httpbuilderng.http.HttpTask
-
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -34,10 +33,8 @@ dependencies {
     compile group: 'io.vavr', name: 'vavr', version: '0.10.2'
     compile 'io.springfox:springfox-swagger-ui:2.9.2'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-    compile group: 'org.mapstruct', name: 'mapstruct-jdk8', version: '1.3.0.Final'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.3.0.Final'
     annotationProcessor group: 'io.vavr', name: 'vavr-match-processor', version: '0.10.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
@@ -49,7 +46,7 @@ dependencies {
 
 task devInit(type: HttpTask) {
     config {
-        request.uri = 'http://localhost:8080'
+        request.uri = 'http://localhost:8080' //configure here
         request.contentType = 'application/json'
         request.auth.basic 'admin', 'admin'
     }

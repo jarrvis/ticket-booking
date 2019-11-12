@@ -147,3 +147,4 @@ b. 15 minutes before the screening.
 Not as a GET thus reservation create operation does not return confirmation url but id and token.
 2. Screening rooms are rectangular, no inactive seats
 3. Prices are constant (no pricing strategies) and kept in code, not in DB
+4. When using Mongo: use version >=  3.7 (handling LocalDateTime), or better >= 4.0 (handling multidocument transactions)
