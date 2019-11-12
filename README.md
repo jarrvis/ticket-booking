@@ -79,7 +79,9 @@ Add --debug flag to see requests and responses in console:
 ## TODO
 
 - (Other repo) Move to CQRS with Domain Events as synchronization: two services (source and sink) - to scale separately. Use Kafka/RabbitMQ for pub/sub domain events
-
+- HATEOAS
+- Controller tests
+- In integration tests: do not use DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD. Replace it with clearing in memory DB before each test
 
 ## Requirements
 
@@ -139,3 +141,9 @@ minutes before the screening), the system should cancel the reservation.
 2. Reservation cancellation should happen in two cases:
 a. 15 minutes after the reservation is made,
 b. 15 minutes before the screening.
+
+### Additional assumptions
+1. Reservation confirmation is done over PATCH /reservations with reservation id and confirmation token. 
+Not as a GET thus reservation create operation does not return confirmation url but id and token.
+2. Screening rooms are rectangular, no inactive seats
+3. Prices are constant (no pricing strategies) and kept in code, not in DB
