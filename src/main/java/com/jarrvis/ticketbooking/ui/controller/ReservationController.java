@@ -68,7 +68,7 @@ public class ReservationController {
                 createReservationCommand.getSurname(),
                 createReservationCommand.getTickets())
 
-                .flatMap((resource) -> Mono.just(ResponseEntity.created(URI.create("")).body(resource)));
+                .flatMap((resource) -> Mono.just(ResponseEntity.created(URI.create("/reservations")).body(resource)));
     }
 
     /**

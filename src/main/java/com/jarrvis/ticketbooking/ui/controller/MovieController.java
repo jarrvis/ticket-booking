@@ -64,7 +64,7 @@ public class MovieController {
         }
 
         return movieService.addNewMovie(addNewMovieRequest.getName(), addNewMovieRequest.getDescription(), addNewMovieRequest.getDuration())
-                .flatMap((status) -> Mono.just(ResponseEntity.created(URI.create("")).build()));
+                .flatMap((status) -> Mono.just(ResponseEntity.created(URI.create("/movies")).build()));
     }
 
     /**

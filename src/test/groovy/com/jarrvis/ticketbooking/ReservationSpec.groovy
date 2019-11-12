@@ -1,9 +1,6 @@
 package com.jarrvis.ticketbooking
 
-import com.jarrvis.ticketbooking.domain.Movie
-import com.jarrvis.ticketbooking.domain.MovieRepository
-import com.jarrvis.ticketbooking.domain.Room
-import com.jarrvis.ticketbooking.domain.RoomRepository
+
 import com.jarrvis.ticketbooking.domain.Screening
 import com.jarrvis.ticketbooking.domain.ScreeningRepository
 import com.jarrvis.ticketbooking.domain.Ticket

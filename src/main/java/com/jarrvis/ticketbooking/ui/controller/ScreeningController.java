@@ -66,12 +66,11 @@ public class ScreeningController {
         }
 
         return screeningService.addNewScreening(addNewScreeningRequest.getStartTime(), addNewScreeningRequest.getMovieName(), addNewScreeningRequest.getRoomName())
-                .flatMap((resource) -> Mono.just(ResponseEntity.created(URI.create("")).body(resource)));
+                .flatMap((resource) -> Mono.just(ResponseEntity.created(URI.create("/screenings")).body(resource)));
     }
 
     /**
      * REST operation to search for screenings in multiplex offer
-     * @return
      */
     @GetMapping()
     @ApiOperation(value = "Search for screenings in multiplex offer")

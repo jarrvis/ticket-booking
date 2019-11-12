@@ -73,7 +73,7 @@ class ReservationServiceSpec extends Specification {
 
     def "Should not be possible to cancel non existing reservation"() {
         given:
-            reservationRepository.findById(_ as String) >> Mono.empty()
+            reservationRepository.findByIdAndStatus(_ as String, _ as ReservationStatus) >> Mono.empty()
 
         when:
             reservationService.cancel("non existing").get()
@@ -83,7 +83,7 @@ class ReservationServiceSpec extends Specification {
 
     def "Should not be possible to cancel reservation for non existing screening"() {
         given:
-            reservationRepository.findById(_ as String) >> Mono.just(
+            reservationRepository.findByIdAndStatus(_ as String, _ as ReservationStatus) >> Mono.just(
                     new Reservation("id", "token", ReservationStatus.OPEN, LocalDateTime.now().plusHours(2), LocalDateTime.now(), "id", LocalDateTime.now().plusHours(2), "name", "surname", [] as Set, BigDecimal.TEN, Currency.PLN))
             screeningRepository.findById(_ as String) >> Mono.empty()
 
@@ -97,7 +97,7 @@ class ReservationServiceSpec extends Specification {
         given:
             screeningRepository.findById(_ as String) >> Mono.just(
                     new Screening(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).minusHours(2), "Joker", "Dream", 10, 15))
-            reservationRepository.findById(_ as String) >> Mono.just(
+            reservationRepository.findByIdAndStatus(_ as String, _ as ReservationStatus) >> Mono.just(
                     new Reservation("id", "token", ReservationStatus.OPEN, LocalDateTime.now().plusHours(2), LocalDateTime.now(), "id", LocalDateTime.now().plusHours(2), "name", "surname", [] as Set, BigDecimal.TEN, Currency.PLN))
             screeningRepository.save(_ as Screening) >> { Screening screening -> Mono.just(screening) }
             reservationRepository.save(_ as Reservation) >> { Reservation reservation -> Mono.just(reservation) }

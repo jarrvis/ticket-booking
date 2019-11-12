@@ -11,7 +11,6 @@ import io.vavr.Tuple2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -37,11 +36,11 @@ public class ReservationService {
     private final ScreeningRepository screeningRepository;
 
     /**
-     * @param screeningId
-     * @param name
-     * @param surname
-     * @param tickets
-     * @return
+     * @param screeningId id of screening to be reserved
+     * @param name        name of the customer
+     * @param surname     surname of the customer
+     * @param tickets     places with ticket types to be reserved
+     * @return Mono of ReservationResource
      */
     public Mono<ReservationResource> reserve(String screeningId, String name, String surname, Set<Ticket> tickets) {
         Set<Tuple2<Integer, Integer>> places = tickets.stream().map(ticket -> new Tuple2<>(ticket.getRowNumber(), ticket.getSeatNumber())).collect(Collectors.toSet());
@@ -55,6 +54,7 @@ public class ReservationService {
         return
                 screeningMono
                         .zipWhen(screening -> Mono.just(new Reservation(screeningId, screening.getStartTime(), name, surname, tickets)))
+
                         //book seats, calculate total price, calculate expiration date
                         .flatMap(tuple -> {
                             tuple.getT1().bookSeats(places);
@@ -62,10 +62,13 @@ public class ReservationService {
                             tuple.getT2().calculateExpirationDate();
                             return Mono.just(tuple);
                         })
+
                         //save screening and reservation
                         .flatMap(tuple -> this.screeningRepository.save(tuple.getT1())
                                 .flatMap(_x -> this.reservationRepository.save(tuple.getT2())))
-                        //schedule reservation cancel
+
+                        //schedule reservation cancel.
+                        //exception from #cancel automatically swallowed. in this context it can only be thrown if reservation was already confirmed/cancelled
                         .doOnNext(reservation -> Mono
                                 //.delay(Duration.ofSeconds(5)) //for testing
                                 .delay(Duration.between(LocalDateTime.now(), reservation.getExpiresAt()))
@@ -80,9 +83,9 @@ public class ReservationService {
     }
 
     /**
-     * @param reservationId
-     * @param token
-     * @return
+     * @param reservationId identifier of reservation to be confirmed
+     * @param token         hash to identify reservation
+     * @return Mono of ReservationResource
      */
     public Mono<ReservationResource> confirm(String reservationId, String token) {
         //check if reservation exists
@@ -104,12 +107,12 @@ public class ReservationService {
     }
 
     /**
-     * @param reservationId
+     * @param reservationId identifier of reservation to be cancelled
      * @return
      */
-    public CompletableFuture<Screening> cancel(String reservationId) {
-        //check if reservation exists
-        final Mono<Reservation> reservation = this.reservationRepository.findById(reservationId)
+    public CompletableFuture<Reservation> cancel(String reservationId) {
+        //check if open reservation exists
+        final Mono<Reservation> reservation = this.reservationRepository.findByIdAndStatus(reservationId, ReservationStatus.OPEN)
                 .switchIfEmpty(Mono.error(new IllegalStateException(String.format("Reservation with id: '%s' does not exists", reservationId))));
 
         //check if screening exists
@@ -125,8 +128,8 @@ public class ReservationService {
                     return Mono.just(tuple);
                 })
                 .flatMap(tuple ->
-                        reservationRepository.save(tuple.getT1())
-                                .flatMap(_x -> this.screeningRepository.save(tuple.getT2())))
+                        screeningRepository.save(tuple.getT2())
+                                .flatMap(_x -> this.reservationRepository.save(tuple.getT1())))
                 .toFuture();
     }
 
