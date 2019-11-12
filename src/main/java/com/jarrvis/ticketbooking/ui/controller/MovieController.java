@@ -63,7 +63,7 @@ public class MovieController {
                     bindingResult);
         }
 
-        return movieService.addNewMovie(addNewMovieRequest.getName(), addNewMovieRequest.getDescription(), addNewMovieRequest.getFirstScreeningDate(), addNewMovieRequest.getLastScreeningDate(), addNewMovieRequest.getDuration())
+        return movieService.addNewMovie(addNewMovieRequest.getName(), addNewMovieRequest.getDescription(), addNewMovieRequest.getDuration())
                 .flatMap((status) -> Mono.just(ResponseEntity.created(URI.create("")).build()));
     }
 

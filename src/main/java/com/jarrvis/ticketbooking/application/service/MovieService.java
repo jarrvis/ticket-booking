@@ -27,19 +27,19 @@ public class MovieService {
     private final MovieRepository movieRepository;
 
 
-    public Mono<Boolean> addNewMovie(String name, String description, LocalDateTime firstScreeningDate, LocalDateTime lastScreeningDate, Long duration) {
+    public Mono<Boolean> addNewMovie(String name, String description, Long duration) {
         return this.movieRepository.existsByName(name)
                 .flatMap(exists -> {
                     if (exists) {
                         throw new AlreadyExistException(String.format("Movie with name: %s already exists", name));
                     }
-                    return this.movieRepository.save(new Movie(name, description, firstScreeningDate, lastScreeningDate, duration))
+                    return this.movieRepository.save(new Movie(name, description, duration))
                             .flatMap(movie -> Mono.just(true));
                 });
     }
 
     public Flux<MovieResource> listAllMovies() {
         return this.movieRepository.findAll()
-                .flatMap(domain -> Mono.just(new MovieResource(domain.getName(), domain.getDescription(), domain.getFirstScreeningDate(), domain.getLastScreeningDate())));
+                .flatMap(domain -> Mono.just(new MovieResource(domain.getName(), domain.getDescription(), domain.getDuration())));
     }
 }

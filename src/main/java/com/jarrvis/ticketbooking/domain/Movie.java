@@ -11,9 +11,5 @@ public class Movie {
 
     private String description;
 
-    private LocalDateTime firstScreeningDate;
-
-    private LocalDateTime lastScreeningDate;
-
     private Long duration;
 }

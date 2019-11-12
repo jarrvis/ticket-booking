@@ -17,10 +17,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@DateRange(
-        message = "First screening date cannot be after last screening date",
-        startDateFieldName = "firstScreeningDate",
-        endDateFieldName = "lastScreeningDate")
 public class AddNewMovieRequest {
 
     @NotEmpty
@@ -32,17 +28,7 @@ public class AddNewMovieRequest {
     private String description;
 
     @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @ApiModelProperty(value = "First screening date - meta.", required = true)
-    private LocalDateTime firstScreeningDate;
-
-    @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @ApiModelProperty(value = "Last screening date - meta.", required = true)
-    private LocalDateTime lastScreeningDate;
-
-    @NotNull
-    @Range(min = 5, max = 200)
+    @Range(min = 5, max = 240)
     @ApiModelProperty(value = "Movie duration in minutes.", required = true)
     private Long duration;
 

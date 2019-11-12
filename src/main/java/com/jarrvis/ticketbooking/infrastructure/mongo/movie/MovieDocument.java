@@ -28,16 +28,10 @@ public class MovieDocument {
     private final String description;
 
     @NotNull
-    private final LocalDateTime firstScreeningDate;
-
-    @NotNull
-    private final LocalDateTime lastScreeningDate;
-
-    @NotNull
     @Range(min=5, max = 200)
     private final Long duration;
 
     public Movie mutateTo() {
-        return new Movie(name, description, firstScreeningDate, lastScreeningDate, duration);
+        return new Movie(name, description, duration);
     }
 }

@@ -19,19 +19,19 @@ public class MovieMongoAdapter implements MovieRepository {
     public Flux<Movie> findAll() {
         return this.movieMongoRepository.findAll()
                 .flatMap(movieDocument ->
-                        Mono.just(new Movie(movieDocument.getName(), movieDocument.getDescription(), movieDocument.getFirstScreeningDate(), movieDocument.getLastScreeningDate(), movieDocument.getDuration())));
+                        Mono.just(new Movie(movieDocument.getName(), movieDocument.getDescription(), movieDocument.getDuration())));
     }
 
     @Override
     public Mono<Movie> findByName(String name) {
         return this.movieMongoRepository.findByName(name)
                 .flatMap(movieDocument ->
-                        Mono.just(new Movie(movieDocument.getName(), movieDocument.getDescription(), movieDocument.getFirstScreeningDate(), movieDocument.getLastScreeningDate(), movieDocument.getDuration())));
+                        Mono.just(new Movie(movieDocument.getName(), movieDocument.getDescription(), movieDocument.getDuration())));
     }
 
     @Override
     public Mono<Movie> save(Movie movie) {
-        MovieDocument document = new MovieDocument(movie.getName(), movie.getDescription(), movie.getFirstScreeningDate(), movie.getLastScreeningDate(), movie.getDuration());
+        MovieDocument document = new MovieDocument(movie.getName(), movie.getDescription(), movie.getDuration());
         return this.movieMongoRepository.save(document)
                 .flatMap(entity -> Mono.just(entity.mutateTo()));
     }

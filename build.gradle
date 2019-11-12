@@ -86,9 +86,7 @@ task devInit(type: HttpTask) {
         request.body = [
                 name              : "Joker",
                 description       : "Joker",
-                duration          : "120",
-                firstScreeningDate: LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), //meta
-                lastScreeningDate : LocalDateTime.now().plusDays(50).format(DateTimeFormatter.ISO_DATE_TIME),
+                duration          : "120"
         ]
     }
     post {
@@ -96,9 +94,7 @@ task devInit(type: HttpTask) {
         request.body = [
                 name              : "Parasite",
                 description       : "Parasite",
-                duration          : "150",
-                firstScreeningDate: LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), //meta
-                lastScreeningDate : LocalDateTime.now().plusDays(50).format(DateTimeFormatter.ISO_DATE_TIME),
+                duration          : "150"
         ]
     }
     post {
@@ -106,9 +102,7 @@ task devInit(type: HttpTask) {
         request.body = [
                 name              : "Dolor y Gloria",
                 description       : "Dolor y Gloria",
-                duration          : "130",
-                firstScreeningDate: LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), //meta
-                lastScreeningDate : LocalDateTime.now().plusDays(50).format(DateTimeFormatter.ISO_DATE_TIME),
+                duration          : "130"
         ]
     }
 

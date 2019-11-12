@@ -1,6 +1,5 @@
 package com.jarrvis.ticketbooking
 
-
 import com.jarrvis.ticketbooking.ui.configuration.ApplicationConfig
 import com.jarrvis.ticketbooking.ui.dto.request.AddNewMovieRequest
 import com.jarrvis.ticketbooking.ui.dto.response.MovieResource
@@ -14,7 +13,6 @@ import reactor.core.publisher.Mono
 import spock.lang.Specification
 
 import java.time.Duration
-import java.time.LocalDateTime
 
 import static java.nio.charset.StandardCharsets.UTF_8
 
@@ -71,8 +69,8 @@ class MoviesSpec extends Specification {
                     .name("Joker")
                     .description("Joker")
                     .duration(120)
-                    .firstScreeningDate(LocalDateTime.now())
-                    .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
+                    .build()
+
         when: 'saving movie'
             def result = webTestClient
                     .post()
@@ -108,8 +106,8 @@ class MoviesSpec extends Specification {
                     .name("Batman")
                     .description("Batman")
                     .duration(120)
-                    .firstScreeningDate(LocalDateTime.now())
-                    .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
+                    .build()
+
         when: 'saving movie'
             def result = webTestClient
                     .post()
@@ -141,8 +139,8 @@ class MoviesSpec extends Specification {
                     .name("Avengers")
                     .description("Avengers")
                     .duration(120)
-                    .firstScreeningDate(LocalDateTime.now())
-                    .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
+                    .build()
+
         when: 'saving movie'
             def result = webTestClient
                     .post()

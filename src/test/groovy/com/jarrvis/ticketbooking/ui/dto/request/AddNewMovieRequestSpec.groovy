@@ -1,12 +1,11 @@
 package com.jarrvis.ticketbooking.ui.dto.request
 
-
 import spock.lang.Specification
+
 import javax.validation.ConstraintViolation
 import javax.validation.Validation
 import javax.validation.Validator
 import javax.validation.ValidatorFactory
-import java.time.LocalDateTime
 
 class AddNewMovieRequestSpec extends Specification {
 
@@ -24,13 +23,12 @@ class AddNewMovieRequestSpec extends Specification {
                     .name("")
                     .description("Nice movie")
                     .duration(120)
-                    .firstScreeningDate(LocalDateTime.now())
-                    .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
+                    .build()
 
         when:
             Set<ConstraintViolation<AddNewMovieRequest>> validationResults = validator.validate(addNewMovieRequest)
         then:
-            validationResults.first().getPropertyPath().first().name == "name"
+            validationResults.any { it.getPropertyPath().first().name == "name" }
     }
 
     def "should not be possible to add new movie without movie description"() {
@@ -39,44 +37,53 @@ class AddNewMovieRequestSpec extends Specification {
                     .name("Joker")
                     .description("")
                     .duration(120)
-                    .firstScreeningDate(LocalDateTime.now())
-                    .lastScreeningDate(LocalDateTime.now().plusHours(2)).build()
+                    .build()
 
         when:
             Set<ConstraintViolation<AddNewMovieRequest>> validationResults = validator.validate(addNewMovieRequest)
         then:
-            validationResults.first().getPropertyPath().first().name == "description"
+            validationResults.any { it.getPropertyPath().first().name == "description" }
     }
 
-    def "should not be possible to add new movie without movie start time or end time"() {
+    def "should not be possible to add new movie without movie duration"() {
         setup:
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Joker")
                     .description("Joker")
-                    .duration(120)
-                    .firstScreeningDate(null)
-                    .lastScreeningDate(null).build()
+                    .duration()
+                    .build()
 
         when:
             Set<ConstraintViolation<AddNewMovieRequest>> validationResults = validator.validate(addNewMovieRequest)
         then:
-            validationResults.any { it.getPropertyPath().first().name == "firstScreeningDate" }
-            validationResults.any { it.getPropertyPath().first().name == "lastScreeningDate" }
+            validationResults.any { it.getPropertyPath().first().name == "duration" }
     }
 
-    def "should not be possible to add new movie with start time after end time"() {
+    def "should not be possible to add new movie with duration shorter than 5 minutes"() {
         setup:
             def addNewMovieRequest = AddNewMovieRequest.builder()
                     .name("Joker")
                     .description("Joker")
-                    .duration(120)
-                    .firstScreeningDate(LocalDateTime.now())
-                    .lastScreeningDate(LocalDateTime.now().minusHours(2)).build()
+                    .duration(4)
+                    .build()
 
         when:
             Set<ConstraintViolation<AddNewMovieRequest>> validationResults = validator.validate(addNewMovieRequest)
         then:
-            validationResults.any { it.messageTemplate == "First screening date cannot be after last screening date" }
+            validationResults.any { it.getPropertyPath().first().name == "duration" }
+    }
 
+    def "should not be possible to add new movie with duration longer than than 2 hours"() {
+        setup:
+            def addNewMovieRequest = AddNewMovieRequest.builder()
+                    .name("Joker")
+                    .description("Joker")
+                    .duration(241)
+                    .build()
+
+        when:
+            Set<ConstraintViolation<AddNewMovieRequest>> validationResults = validator.validate(addNewMovieRequest)
+        then:
+            validationResults.any { it.getPropertyPath().first().name == "duration" }
     }
 }

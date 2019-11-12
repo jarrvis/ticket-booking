@@ -13,6 +13,5 @@ public class MovieResource {
 
     private String name;
     private String description;
-    private LocalDateTime firstScreeningDate;
-    private LocalDateTime lastScreeningDate;
+    private Long duration;
 }
