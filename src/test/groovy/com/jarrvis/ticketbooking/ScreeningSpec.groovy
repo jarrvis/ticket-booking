@@ -97,7 +97,7 @@ class ScreeningSpec extends Specification {
 
     def "should not be possible to save screening, if room does not exist"() {
         setup:
-            this.movieRepository.save(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)).block()
+            this.movieRepository.save(new Movie("Joker", "Joker", 120)).block()
             def addNewScreeningRequest = AddNewScreeningRequest.builder()
                     .movieName("Joker")
                     .roomName("Not existing movie")
@@ -141,7 +141,7 @@ class ScreeningSpec extends Specification {
 
     def "should be possible to save screening, if movie and room exist"() {
         setup:
-            this.movieRepository.save(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)).block()
+            this.movieRepository.save(new Movie("Joker", "Joker", 120)).block()
             this.roomRepository.save(new Room("Dream", 10, 15)).block()
             def addNewScreeningRequest = AddNewScreeningRequest.builder()
                     .movieName("Joker")
@@ -173,7 +173,7 @@ class ScreeningSpec extends Specification {
                     .roomName(roomName)
                     .startTime(startTime)
                     .build()
-            this.movieRepository.save(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), duration)).block()
+            this.movieRepository.save(new Movie("Joker", "Joker", duration)).block()
             this.roomRepository.save(new Room(roomName, 10, 15)).block()
         when: 'saving screening 1'
             def result = webTestClient
@@ -216,7 +216,7 @@ class ScreeningSpec extends Specification {
                     .roomName("Dream")
                     .startTime(startTime)
                     .build()
-            this.movieRepository.save(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), duration)).block()
+            this.movieRepository.save(new Movie("Joker", "Joker", duration)).block()
             this.roomRepository.save(new Room("Dream", 10, 15)).block()
         when: 'saving screening'
             def result = webTestClient

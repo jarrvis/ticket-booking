@@ -21,15 +21,14 @@ class MovieServiceSpec extends Specification {
 
     def "Should list all movies"() {
         given:
-            def movie = new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)
+            def movie = new Movie("Joker", "Joker", 120)
             movieRepository.findAll() >> Flux.just(movie)
         when:
             def resource = movieService.listAllMovies().blockFirst()
         then:
             resource.name == movie.name
             resource.description == movie.description
-            resource.lastScreeningDate == movie.lastScreeningDate
-            resource.firstScreeningDate == movie.firstScreeningDate
+            resource.duration == movie.duration
     }
 
     def "Should not be able to add movie with name that already exist"() {
@@ -37,7 +36,7 @@ class MovieServiceSpec extends Specification {
             movieRepository.existsByName(_ as String) >> Mono.just(true)
 
         when:
-            movieService.addNewMovie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)
+            movieService.addNewMovie("Joker", "Joker", 120)
                     .block()
         then:
             thrown(AlreadyExistException)
@@ -50,7 +49,7 @@ class MovieServiceSpec extends Specification {
             movieRepository.save(_ as Movie) >> { Movie movie -> Mono.just(movie )}
 
         when:
-            def result = movieService.addNewMovie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120)
+            def result = movieService.addNewMovie("Joker", "Joker", 120)
                     .block()
         then:
             result

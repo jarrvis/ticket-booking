@@ -36,7 +36,7 @@ class ScreeningServiceSpec extends Specification {
     def "Should not be possible to add screening for non existing room"() {
         given:
             roomRepository.findByName(_ as String) >> Mono.empty()
-            movieRepository.findByName(_ as String) >> Mono.just(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120))
+            movieRepository.findByName(_ as String) >> Mono.just(new Movie("Joker", "Joker", 120))
 
         when:
             screeningService.addNewScreening(LocalDateTime.now().plusDays(1), "Joker", "Dream")
@@ -47,7 +47,7 @@ class ScreeningServiceSpec extends Specification {
 
     def "Should save screening"() {
         given:
-            movieRepository.findByName(_ as String) >> Mono.just(new Movie("Joker", "Joker", LocalDateTime.now(), LocalDateTime.now().plusDays(20), 120))
+            movieRepository.findByName(_ as String) >> Mono.just(new Movie("Joker", "Joker",  120))
             roomRepository.findByName(_ as String) >> Mono.just(new Room("Dream", 10, 15))
             screeningRepository.existsByRoomAndStartTimeBeforeAndEndTimeAfter(_ as String, _ as LocalDateTime, _ as LocalDateTime) >> Mono.just(false)
             screeningRepository.save(_ as Screening) >> { Screening screening -> Mono.just(screening)}

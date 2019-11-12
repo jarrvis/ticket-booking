@@ -11,10 +11,13 @@ import io.vavr.Tuple2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,16 +55,23 @@ public class ReservationService {
         return
                 screeningMono
                         .zipWhen(screening -> Mono.just(new Reservation(screeningId, screening.getStartTime(), name, surname, tickets)))
+                        //book seats, calculate total price, calculate expiration date
                         .flatMap(tuple -> {
                             tuple.getT1().bookSeats(places);
                             tuple.getT2().calculateTotalPrice();
                             tuple.getT2().calculateExpirationDate();
                             return Mono.just(tuple);
                         })
-                        .flatMap(tuple -> {
-                            this.screeningRepository.save(tuple.getT1());
-                            return this.reservationRepository.save(tuple.getT2());
-                        })
+                        //save screening and reservation
+                        .flatMap(tuple -> this.screeningRepository.save(tuple.getT1())
+                                .flatMap(_x -> this.reservationRepository.save(tuple.getT2())))
+                        //schedule reservation cancel
+                        .doOnNext(reservation -> Mono
+                                //.delay(Duration.ofSeconds(5)) //for testing
+                                .delay(Duration.between(LocalDateTime.now(), reservation.getExpiresAt()))
+                                .doOnNext(_x -> this.cancel(reservation.getId()))
+                                .subscribe()
+                        )
                         .flatMap(reservation ->
                                 Mono.just(
                                         new ReservationResource(reservation.getId(), reservation.getToken(), reservation.getStatus(), reservation.getExpiresAt(), reservation.getScreeningId(),
@@ -97,7 +107,7 @@ public class ReservationService {
      * @param reservationId
      * @return
      */
-    public Mono<Boolean> cancel(String reservationId) {
+    public CompletableFuture<Screening> cancel(String reservationId) {
         //check if reservation exists
         final Mono<Reservation> reservation = this.reservationRepository.findById(reservationId)
                 .switchIfEmpty(Mono.error(new IllegalStateException(String.format("Reservation with id: '%s' does not exists", reservationId))));
@@ -108,24 +118,16 @@ public class ReservationService {
 
         return reservation
                 .zipWith(screening)
-                //cancel reservation
+                //cancel reservation and free screening places
                 .flatMap(tuple -> {
                     tuple.getT1().cancel();
-                    return this.reservationRepository.save(tuple.getT1())
-                            .flatMap(dom -> Mono.just(tuple));
-                })
-                //free screening places
-                .flatMap(tuple -> {
                     tuple.getT2().freeReservedSeats(tuple.getT1().getReservedPlaces());
-                    return this.screeningRepository.save(tuple.getT2());
+                    return Mono.just(tuple);
                 })
-                .flatMap(domain -> Mono.just(true));
-
+                .flatMap(tuple ->
+                        reservationRepository.save(tuple.getT1())
+                                .flatMap(_x -> this.screeningRepository.save(tuple.getT2())))
+                .toFuture();
     }
 
-    public Mono<Void> cancelExpired() {
-        return this.reservationRepository.findByExpiresAtAfter(LocalDateTime.now())
-                .flatMap(s -> this.cancel(s.getId()))
-                .then();
-    }
 }
