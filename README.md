@@ -4,9 +4,9 @@
 
 This small repo is a showcase of domain driven development and test driven development. A few DDD concepts implemented here:
 
-- No anemic domain models. Domain objects are 'doing things'. Moreover they do most important things in app. They carry whole business logic
+- No anemic domain models. Domain objects are 'doing things'. Moreover they do most important things in app
 - Application structure: domain, infrastructure, application, ui (aka presentation)
-- Application does not depend on any DB. Persistence layer implementation can be 'replaced' at any time. Currently used MongoDB is only one of implementations that can be used
+- Application (domain, application service, ui) does not depend on any DB. Persistence layer implementation can be 'replaced' at any time. Currently used MongoDB is only one of implementations that can be utilized
 - Services (actually application services, not domain services) are used for executing abstract persistence methods and domain methods
 - Use of value objects e.g. Price, Movie, Room
 - Use of ports (like application services e.g. ReservationService or repositories e.g. ScreeningRepository) and adapters (like REST endpoint for Screenings or repository implementation e.g. MovieMongoRepository)
@@ -66,7 +66,7 @@ Integration tests are using in memory mongoDB. They (should) cover all possible 
 
 ## Init
 
-Apart from integration tests, local manual tests can be done with sample data. To make it simple an init script was prepared to initialize app with sample data.
+Apart from integration tests, local manual tests can be done with sample data. To make it simple you can use init script to initialize app with sample data. Tough I encourage to use swagger ui to get operations docs and possible scenarios
 
 Run:
 

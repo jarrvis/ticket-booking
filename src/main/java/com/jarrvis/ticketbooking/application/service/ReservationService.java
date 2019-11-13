@@ -108,7 +108,7 @@ public class ReservationService {
 
     /**
      * @param reservationId identifier of reservation to be cancelled
-     * @return
+     * @return CompletableFuture of Reservation domain object
      */
     public CompletableFuture<Reservation> cancel(String reservationId) {
         //check if open reservation exists

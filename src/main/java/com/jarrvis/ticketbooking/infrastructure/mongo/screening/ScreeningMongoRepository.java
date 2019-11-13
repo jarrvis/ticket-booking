@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public interface ScreeningMongoRepository extends ReactiveMongoRepository<ScreeningDocument, String> {
 
     Flux<ScreeningDocument> findByStartTimeBetweenOrderByMovieAscStartTimeAsc(LocalDateTime startDate, LocalDateTime endDate);
-
     Mono<Boolean> existsByRoomAndStartTimeBeforeAndEndTimeAfter(String room, LocalDateTime startTime, LocalDateTime endTime);
 
 }

@@ -27,6 +27,13 @@ public class MovieService {
     private final MovieRepository movieRepository;
 
 
+    /**
+     *
+     * @param name the name of the movie
+     * @param description the description of the movie
+     * @param duration the duration of the movie in minutes
+     * @return Mono of true/false
+     */
     public Mono<Boolean> addNewMovie(String name, String description, Long duration) {
         return this.movieRepository.existsByName(name)
                 .flatMap(exists -> {
@@ -38,6 +45,10 @@ public class MovieService {
                 });
     }
 
+    /**
+     *
+     * @return Flux of MovieResource
+     */
     public Flux<MovieResource> listAllMovies() {
         return this.movieRepository.findAll()
                 .flatMap(domain -> Mono.just(new MovieResource(domain.getName(), domain.getDescription(), domain.getDuration())));

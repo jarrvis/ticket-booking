@@ -25,6 +25,13 @@ public class MovieRoomService {
     private final RoomRepository roomRepository;
 
 
+    /**
+     *
+     * @param name name of the screening room to be added
+     * @param rows number of rows in the screening room to be added
+     * @param seatsPerRow number of seats in one row in screening room to be added
+     * @return Mono of true/false
+     */
     public Mono<Boolean> addNewRoom(String name, int rows, int seatsPerRow) {
         return this.roomRepository.existsByName(name)
                 .flatMap(exists -> {
@@ -36,6 +43,10 @@ public class MovieRoomService {
                 });
     }
 
+    /**
+     *
+     * @return Flux of RoomResource
+     */
     public Flux<RoomResource> listAllRooms() {
         return this.roomRepository.findAll()
                 .flatMap(domain -> Mono.just(new RoomResource(domain.getName(), domain.getRows(), domain.getSeatsPerRow())));

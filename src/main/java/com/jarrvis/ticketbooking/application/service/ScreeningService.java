@@ -35,12 +35,25 @@ public class ScreeningService {
     private final RoomRepository roomRepository;
     private final MovieRepository movieRepository;
 
+    /**
+     *
+     * @param startTime the time from which search of screenings should happen
+     * @param endTme the time to which search of screenings should happen
+     * @return Flux of ScreeningResource
+     */
     public Flux<ScreeningResource> searchForScreenings(LocalDateTime startTime, LocalDateTime endTme) {
         return this.screeningRepository.findByStartTimeBetweenOrderByMovieAscStartTimeAsc(startTime, endTme)
                 .flatMap(screening -> Mono.just(
                         new ScreeningResource(screening.getId(), screening.getMovie(), screening.getRoom(), screening.getStartTime(), screening.getEndTime(), screening.getRows(), screening.getSeatsPerRow(), screening.availableSeats())));
     }
 
+    /**
+     *
+     * @param startTime the screening start time
+     * @param movieName the name of the movie
+     * @param roomName the name of the screening room
+     * @return Mono of ScreeningResource
+     */
     public Mono<ScreeningResource> addNewScreening(LocalDateTime startTime, String movieName, String roomName) {
         // check if room exists
         final Mono<Room> room = this.roomRepository.findByName(roomName)

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.naming.ServiceUnavailableException;
 import java.util.stream.Collectors;
 
 
@@ -83,19 +82,6 @@ public class GlobalExceptionHandlingControllerAdvice {
 
         }
         return null;
-    }
-
-    /**
-     * General fallback exception handler, translating all not otherwise caught errors into HTTP status code 503.
-     *
-     * @param ex Exception
-     */
-    @ExceptionHandler(ServiceUnavailableException.class)
-    @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
-    @ResponseBody
-    public VndErrors handleServiceUnavailableException(ServiceUnavailableException ex) {
-        log.error(ex.getMessage(), ex);
-        return new VndErrors("error", ex.getMessage());
     }
 
 
