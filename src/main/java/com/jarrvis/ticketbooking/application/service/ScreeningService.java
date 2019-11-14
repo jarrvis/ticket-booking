@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class ScreeningService {
 
 

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class ReservationService {
 
     public ReservationService(

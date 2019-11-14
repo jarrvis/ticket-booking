@@ -28,7 +28,7 @@ public class MovieDocument {
     private final String description;
 
     @NotNull
-    @Range(min=5, max = 200)
+    @Range(min=5, max = 240)
     private final Long duration;
 
     public Movie mutateTo() {
