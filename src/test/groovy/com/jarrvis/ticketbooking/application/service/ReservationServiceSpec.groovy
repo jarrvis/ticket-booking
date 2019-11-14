@@ -5,7 +5,6 @@ import reactor.core.publisher.Mono
 import spock.lang.Specification
 
 import java.time.LocalDateTime
-import java.util.concurrent.ExecutionException
 
 class ReservationServiceSpec extends Specification {
 
@@ -76,9 +75,9 @@ class ReservationServiceSpec extends Specification {
             reservationRepository.findByIdAndStatus(_ as String, _ as ReservationStatus) >> Mono.empty()
 
         when:
-            reservationService.cancel("non existing").get()
+            reservationService.cancel("non existing").block()
         then:
-            thrown(ExecutionException)
+            thrown(IllegalStateException)
     }
 
     def "Should not be possible to cancel reservation for non existing screening"() {
@@ -88,9 +87,9 @@ class ReservationServiceSpec extends Specification {
             screeningRepository.findById(_ as String) >> Mono.empty()
 
         when:
-            reservationService.cancel("non existing").get()
+            reservationService.cancel("non existing").block()
         then:
-            thrown(ExecutionException)
+            thrown(IllegalStateException)
     }
 
     def "Should cancel reservation and save screening and reservation"() {

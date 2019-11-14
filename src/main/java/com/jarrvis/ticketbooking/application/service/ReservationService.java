@@ -16,7 +16,6 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -72,7 +71,7 @@ public class ReservationService {
                         .doOnNext(reservation -> Mono
                                 //.delay(Duration.ofSeconds(5)) //for testing
                                 .delay(Duration.between(LocalDateTime.now(), reservation.getExpiresAt()))
-                                .doOnNext(_x -> this.cancel(reservation.getId()))
+                                .doOnNext(_x -> this.cancel(reservation.getId()).subscribe())
                                 .subscribe()
                         )
                         .flatMap(reservation ->
@@ -110,7 +109,7 @@ public class ReservationService {
      * @param reservationId identifier of reservation to be cancelled
      * @return CompletableFuture of Reservation domain object
      */
-    public CompletableFuture<Reservation> cancel(String reservationId) {
+    public Mono<Reservation> cancel(String reservationId) {
         //check if open reservation exists
         final Mono<Reservation> reservation = this.reservationRepository.findByIdAndStatus(reservationId, ReservationStatus.OPEN)
                 .switchIfEmpty(Mono.error(new IllegalStateException(String.format("Reservation with id: '%s' does not exists", reservationId))));
@@ -129,8 +128,7 @@ public class ReservationService {
                 })
                 .flatMap(tuple ->
                         screeningRepository.save(tuple.getT2())
-                                .flatMap(_x -> this.reservationRepository.save(tuple.getT1())))
-                .toFuture();
+                                .flatMap(_x -> this.reservationRepository.save(tuple.getT1())));
     }
 
 }
