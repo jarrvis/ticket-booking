@@ -1,6 +1,8 @@
 package com.jarrvis.ticketbooking.domain;
 
-import io.vavr.Tuple2;
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyCancelledException;
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyConfirmedException;
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyExpiredException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -45,7 +50,7 @@ public class Reservation {
     private final String surname;
 
     @Getter
-    private final Set<Ticket> seats;
+    private final Set<Ticket> tickets;
 
     @Getter
     private BigDecimal totalPrice;
@@ -53,8 +58,9 @@ public class Reservation {
     @Getter
     private Currency currency = Currency.PLN;
 
-    public Set<Tuple2<Integer, Integer>> getReservedPlaces() {
-        return this.seats.stream().map(ticket -> new Tuple2<>(ticket.rowNumber, ticket.seatNumber)).collect(Collectors.toSet());
+    public List<Seat> getReservedPlaces() {
+        return tickets.stream().map(Ticket::getSeat)
+                .collect(Collectors.toList());
     }
 
     public String getFormattedPrice() {
@@ -72,10 +78,11 @@ public class Reservation {
     }
 
     public void calculateTotalPrice() {
-        if (this.seats == null) {
+        if (this.tickets == null) {
             this.totalPrice = BigDecimal.ZERO;
         } else {
-            this.totalPrice = this.seats.stream().map(ticket -> ticket.ticketType.getValue())
+            this.totalPrice = this.tickets.stream()
+                    .map(Ticket::getPriceValue)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
     }
@@ -88,7 +95,7 @@ public class Reservation {
         LocalDateTime quarterBeforeScreeningTime = screeningStartTime.minusMinutes(15);
         this.expiresAt = quarterAfterReservationTime.isBefore(quarterBeforeScreeningTime) ? quarterAfterReservationTime : quarterBeforeScreeningTime;
         if (LocalDateTime.now().isAfter(this.expiresAt)) {
-            throw new IllegalStateException("Reservation already expired");
+            throw new ReservationAlreadyExpiredException();
         }
     }
 
@@ -98,13 +105,13 @@ public class Reservation {
 
     public void confirm() {
         if (this.status == ReservationStatus.CANCELED) {
-            throw new IllegalStateException("Cannot confirm reservation. Reservation was already cancelled");
+            throw new ReservationAlreadyCancelledException();
         }
         if (this.status == ReservationStatus.CONFIRMED) {
-            throw new IllegalStateException("Cannot confirm reservation. Reservation was already confirmed");
+            throw new ReservationAlreadyConfirmedException();
         }
         if (this.expiresAt != null && LocalDateTime.now().isAfter(this.expiresAt)) {
-            throw new IllegalStateException("Cannot confirm reservation. Reservation already expired");
+            throw new ReservationAlreadyExpiredException();
         }
         this.status = ReservationStatus.CONFIRMED;
     }

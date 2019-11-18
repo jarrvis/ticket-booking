@@ -1,12 +1,12 @@
 package com.jarrvis.ticketbooking.ui.dto.response;
 
+import com.jarrvis.ticketbooking.domain.Seat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -20,5 +20,5 @@ public class ScreeningResource {
     private LocalDateTime endTime;
     private int rows;
     private int seatsPerRow;
-    private Map<Integer, List<Integer>> freePlaces;
+    private List<Seat> freePlaces;
 }

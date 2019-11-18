@@ -33,12 +33,12 @@ import java.net.URI;
 @RequestMapping(value = "/reservations")
 public class ReservationController {
 
+    private final ReservationService reservationService;
+
     public ReservationController(
             final ReservationService reservationService) {
         this.reservationService = reservationService;
     }
-
-    private final ReservationService reservationService;
 
     /**
      * REST operation to create new reservation in multiplex

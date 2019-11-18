@@ -15,14 +15,13 @@ import reactor.core.publisher.Mono;
 @Transactional
 public class MovieRoomService {
 
+    private final RoomRepository roomRepository;
 
     public MovieRoomService(
             final RoomRepository roomRepository
     ) {
         this.roomRepository = roomRepository;
     }
-
-    private final RoomRepository roomRepository;
 
 
     /**

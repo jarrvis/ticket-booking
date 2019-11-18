@@ -3,6 +3,8 @@ package com.jarrvis.ticketbooking
 
 import com.jarrvis.ticketbooking.domain.Screening
 import com.jarrvis.ticketbooking.domain.ScreeningRepository
+import com.jarrvis.ticketbooking.domain.ScreeningSeat
+import com.jarrvis.ticketbooking.domain.Seat
 import com.jarrvis.ticketbooking.domain.Ticket
 import com.jarrvis.ticketbooking.domain.TicketType
 import com.jarrvis.ticketbooking.ui.configuration.ApplicationConfig
@@ -50,7 +52,7 @@ class ReservationSpec extends Specification {
                     .name("")
                     .surname("")
                     .screeningId("not existing")
-                    .tickets([new Ticket(1, 1, TicketType.ADULT)] as Set)
+                    .tickets([Ticket.of(Seat.of(1, 1), TicketType.ADULT)] as Set)
                     .build()
 
         when: 'requesting reservation api'
@@ -71,7 +73,7 @@ class ReservationSpec extends Specification {
                     .name("Tony")
                     .surname("Stark")
                     .screeningId("not existing")
-                    .tickets([new Ticket(1, 1, TicketType.ADULT)] as Set)
+                    .tickets([Ticket.of(Seat.of(1, 1), TicketType.ADULT)] as Set)
                     .build()
 
         when: 'requesting reservation api'
@@ -93,7 +95,7 @@ class ReservationSpec extends Specification {
                     .name("Tony")
                     .surname("Stark")
                     .screeningId(screening.getId())
-                    .tickets([new Ticket(1, 1, TicketType.ADULT)] as Set)
+                    .tickets([Ticket.of(Seat.of(1, 1), TicketType.ADULT)] as Set)
                     .build()
 
         when: 'requesting reservation api'
@@ -115,7 +117,7 @@ class ReservationSpec extends Specification {
                     .name("Tony")
                     .surname("Stark")
                     .screeningId(screening.getId())
-                    .tickets([new Ticket(1, 1, TicketType.ADULT)] as Set)
+                    .tickets([Ticket.of(Seat.of(1, 1), TicketType.ADULT)] as Set)
                     .build()
 
         when: 'requesting reservation api'
@@ -177,7 +179,7 @@ class ReservationSpec extends Specification {
                     .name("Tony")
                     .surname("Stark")
                     .screeningId(screening.getId())
-                    .tickets([new Ticket(1, 1, TicketType.ADULT)] as Set)
+                    .tickets([Ticket.of(Seat.of(1, 1), TicketType.ADULT)] as Set)
                     .build()
 
         when: 'requesting reservation api'

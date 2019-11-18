@@ -1,25 +1,23 @@
 package com.jarrvis.ticketbooking.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-import java.math.BigDecimal;
-
-@Data
 @AllArgsConstructor(staticName = "of")
+@RequiredArgsConstructor(staticName = "of")
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Ticket {
+@Getter
+public class ScreeningSeat {
 
+    @NonNull
     private Seat seat;
 
     @EqualsAndHashCode.Exclude
-    TicketType ticketType;
+    private SeatStatus seatStatus;
 
-    public BigDecimal getPriceValue() {
-        return this.ticketType.getValue();
-    }
 }

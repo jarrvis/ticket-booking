@@ -34,12 +34,12 @@ import java.net.URI;
 @RequestMapping(value = "/rooms")
 public class RoomController {
 
+    private final MovieRoomService movieRoomService;
+
     public RoomController(
             final MovieRoomService movieRoomService) {
         this.movieRoomService = movieRoomService;
     }
-
-    private final MovieRoomService movieRoomService;
 
     /**
      * REST operation to add new movie to multiplex offer

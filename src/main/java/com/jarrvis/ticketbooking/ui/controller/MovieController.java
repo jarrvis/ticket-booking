@@ -34,12 +34,12 @@ import java.net.URI;
 @RequestMapping(value = "/movies")
 public class MovieController {
 
+    private final MovieService movieService;
+
     public MovieController(
             final MovieService movieService) {
         this.movieService = movieService;
     }
-
-    private final MovieService movieService;
 
     /**
      * REST operation to add new movie to multiplex offer

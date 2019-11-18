@@ -2,10 +2,13 @@ package com.jarrvis.ticketbooking.infrastructure.mongo.screening;
 
 import com.jarrvis.ticketbooking.domain.Screening;
 import com.jarrvis.ticketbooking.domain.ScreeningRepository;
+import com.jarrvis.ticketbooking.domain.ScreeningSeat;
+import com.jarrvis.ticketbooking.domain.SeatStatus;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Repository
 public class ScreeningMongoAdapter implements ScreeningRepository {
@@ -41,4 +44,5 @@ public class ScreeningMongoAdapter implements ScreeningRepository {
     public Mono<Boolean> existsByRoomAndStartTimeBeforeAndEndTimeAfter(String room, LocalDateTime startTime, LocalDateTime endTime) {
         return this.screeningMongoRepository.existsByRoomAndStartTimeBeforeAndEndTimeAfter(room, startTime, endTime);
     }
+
 }

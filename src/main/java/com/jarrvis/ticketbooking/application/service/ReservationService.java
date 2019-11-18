@@ -7,7 +7,6 @@ import com.jarrvis.ticketbooking.domain.Screening;
 import com.jarrvis.ticketbooking.domain.ScreeningRepository;
 import com.jarrvis.ticketbooking.domain.Ticket;
 import com.jarrvis.ticketbooking.ui.dto.response.ReservationResource;
-import io.vavr.Tuple2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +22,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class ReservationService {
 
+    private final ReservationRepository reservationRepository;
+    private final ScreeningRepository screeningRepository;
+
     public ReservationService(
             final ReservationRepository reservationRepository,
             final ScreeningRepository screeningRepository) {
@@ -30,9 +32,6 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
         this.screeningRepository = screeningRepository;
     }
-
-    private final ReservationRepository reservationRepository;
-    private final ScreeningRepository screeningRepository;
 
     /**
      * @param screeningId id of screening to be reserved
@@ -42,7 +41,7 @@ public class ReservationService {
      * @return Mono of ReservationResource
      */
     public Mono<ReservationResource> reserve(String screeningId, String name, String surname, Set<Ticket> tickets) {
-        Set<Tuple2<Integer, Integer>> places = tickets.stream().map(ticket -> new Tuple2<>(ticket.getRowNumber(), ticket.getSeatNumber())).collect(Collectors.toSet());
+
         //check if screening exists
         final Mono<Screening> screeningMono = this.screeningRepository.findById(screeningId)
                 .switchIfEmpty(Mono.error(new IllegalStateException(String.format("Screening with id: '%s' does not exists", screeningId))));
@@ -56,7 +55,7 @@ public class ReservationService {
 
                         //book seats, calculate total price, calculate expiration date
                         .flatMap(tuple -> {
-                            tuple.getT1().bookSeats(places);
+                            tuple.getT1().bookSeats(tickets.stream().map(Ticket::getSeat).collect(Collectors.toList()));
                             tuple.getT2().calculateTotalPrice();
                             tuple.getT2().calculateExpirationDate();
                             return Mono.just(tuple);
@@ -77,7 +76,7 @@ public class ReservationService {
                         .flatMap(reservation ->
                                 Mono.just(
                                         new ReservationResource(reservation.getId(), reservation.getToken(), reservation.getStatus(), reservation.getExpiresAt(), reservation.getScreeningId(),
-                                                reservation.getScreeningStartTime(), reservation.getName(), reservation.getSurname(), reservation.getFormattedPrice(), reservation.getSeats()))
+                                                reservation.getScreeningStartTime(), reservation.getName(), reservation.getSurname(), reservation.getFormattedPrice(), reservation.getTickets()))
                         );
     }
 
@@ -101,7 +100,7 @@ public class ReservationService {
                     this.reservationRepository.save(domain);
                     return Mono.just(
                             new ReservationResource(domain.getId(), domain.getToken(), domain.getStatus(), domain.getExpiresAt(), domain.getScreeningId(),
-                                    domain.getScreeningStartTime(), domain.getName(), domain.getSurname(), domain.getFormattedPrice(), domain.getSeats()));
+                                    domain.getScreeningStartTime(), domain.getName(), domain.getSurname(), domain.getFormattedPrice(), domain.getTickets()));
                 });
     }
 

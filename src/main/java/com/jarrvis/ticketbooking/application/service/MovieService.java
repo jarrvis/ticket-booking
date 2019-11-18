@@ -17,15 +17,13 @@ import java.time.LocalDateTime;
 @Transactional
 public class MovieService {
 
+    private final MovieRepository movieRepository;
 
     public MovieService(
             final MovieRepository movieRepository
     ) {
         this.movieRepository = movieRepository;
     }
-
-    private final MovieRepository movieRepository;
-
 
     /**
      *

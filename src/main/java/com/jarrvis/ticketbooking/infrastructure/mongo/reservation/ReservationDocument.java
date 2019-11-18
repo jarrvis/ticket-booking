@@ -3,16 +3,21 @@ package com.jarrvis.ticketbooking.infrastructure.mongo.reservation;
 import com.jarrvis.ticketbooking.domain.Currency;
 import com.jarrvis.ticketbooking.domain.Reservation;
 import com.jarrvis.ticketbooking.domain.ReservationStatus;
+import com.jarrvis.ticketbooking.domain.ScreeningSeat;
 import com.jarrvis.ticketbooking.domain.Ticket;
+import com.jarrvis.ticketbooking.domain.TicketType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -28,7 +33,6 @@ public class ReservationDocument {
 
     private ReservationStatus status;
 
-    //@CreatedDate
     private LocalDateTime createdAt;
 
     @NotEmpty
@@ -44,7 +48,7 @@ public class ReservationDocument {
     private String surname;
 
     @NotNull
-    private Set<Ticket> seats;
+    private Set<Ticket> tickets;
 
     @NotNull
     private LocalDateTime expiresAt;
@@ -56,7 +60,7 @@ public class ReservationDocument {
     private Currency currency;
 
     public Reservation mutateTo() {
-        return new Reservation(id, token, status, expiresAt, createdAt, screeningId, screeningStartTime, name, surname, seats, totalPrice, currency);
+        return new Reservation(id, token, status, expiresAt, createdAt, screeningId, screeningStartTime, name, surname, tickets, totalPrice, currency);
     }
 
 }

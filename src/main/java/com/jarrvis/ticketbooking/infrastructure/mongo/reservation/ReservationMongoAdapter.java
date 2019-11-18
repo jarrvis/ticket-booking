@@ -28,7 +28,7 @@ public class ReservationMongoAdapter implements ReservationRepository {
                 new ReservationDocument(
                         reservation.getId(), reservation.getToken(), reservation.getStatus(), reservation.getCreatedAt(),
                         reservation.getScreeningId(), reservation.getScreeningStartTime(), reservation.getName(), reservation.getSurname(),
-                        reservation.getSeats(), reservation.getExpiresAt(), reservation.getTotalPrice(), reservation.getCurrency());
+                        reservation.getTickets(), reservation.getExpiresAt(), reservation.getTotalPrice(), reservation.getCurrency());
         return this.reservationMongoRepository.save(document)
                 .flatMap(reservationDocument -> Mono.just(reservationDocument.mutateTo()));
     }

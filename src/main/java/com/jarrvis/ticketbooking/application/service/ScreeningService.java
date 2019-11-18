@@ -20,6 +20,9 @@ import java.time.LocalDateTime;
 @Transactional
 public class ScreeningService {
 
+    private final ScreeningRepository screeningRepository;
+    private final RoomRepository roomRepository;
+    private final MovieRepository movieRepository;
 
     public ScreeningService(
             final ScreeningRepository screeningRepository,
@@ -30,10 +33,6 @@ public class ScreeningService {
         this.roomRepository = roomRepository;
         this.movieRepository = movieRepository;
     }
-
-    private final ScreeningRepository screeningRepository;
-    private final RoomRepository roomRepository;
-    private final MovieRepository movieRepository;
 
     /**
      *
