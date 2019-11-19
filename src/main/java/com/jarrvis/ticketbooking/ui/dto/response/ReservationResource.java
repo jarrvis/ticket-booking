@@ -1,12 +1,15 @@
 package com.jarrvis.ticketbooking.ui.dto.response;
 
 import com.jarrvis.ticketbooking.domain.ReservationStatus;
+import com.jarrvis.ticketbooking.domain.ScreeningSeat;
 import com.jarrvis.ticketbooking.domain.Ticket;
+import com.jarrvis.ticketbooking.domain.TicketType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -23,6 +26,6 @@ public class ReservationResource {
     private String name;
     private String surname;
     private String totalPrice;
-    private Set<Ticket> seats;
+    private Set<Ticket> tickets;
 
 }

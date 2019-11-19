@@ -1,5 +1,8 @@
 package com.jarrvis.ticketbooking.domain
 
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyCancelledException
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyConfirmedException
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyExpiredException
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -11,9 +14,9 @@ class ReservationSpec extends Specification {
         given:
             def reservation = new Reservation("1234", LocalDateTime.now().plusDays(1), "Tony", "Stark",
                     [
-                            new Ticket(5, 5, TicketType.ADULT),
-                            new Ticket(5, 6, TicketType.CHILD),
-                            new Ticket(5, 7, TicketType.STUDENT),
+                            Ticket.of(Seat.of(5, 5),  TicketType.ADULT),
+                            Ticket.of(Seat.of(5, 6), TicketType.CHILD),
+                            Ticket.of(Seat.of(5, 7), TicketType.STUDENT),
                     ] as Set)
         when:
             reservation.calculateTotalPrice()
@@ -25,7 +28,7 @@ class ReservationSpec extends Specification {
         given: 'Reservation for screening that start tomorrow'
             def reservation = new Reservation("1234", LocalDateTime.now().plusDays(1), "Tony", "Stark",
                     [
-                            new Ticket(5, 5, TicketType.ADULT),
+                            Ticket.of(Seat.of(5, 5), TicketType.ADULT)
                     ] as Set)
         when:
             def justBeforeReservation = LocalDateTime.now()
@@ -41,7 +44,7 @@ class ReservationSpec extends Specification {
         given:
             def reservation = new Reservation("1234", LocalDateTime.now().plusDays(1), "Tony", "Stark",
                     [
-                            new Ticket(5, 5, TicketType.ADULT),
+                            Ticket.of(Seat.of(5, 5), TicketType.ADULT)
                     ] as Set)
         when:
             reservation.cancel()
@@ -53,7 +56,7 @@ class ReservationSpec extends Specification {
         given:
             def reservation = new Reservation("1234", LocalDateTime.now().plusDays(1), "Tony", "Stark",
                     [
-                            new Ticket(5, 5, TicketType.ADULT),
+                            Ticket.of(Seat.of(5, 5), TicketType.ADULT)
                     ] as Set)
         when:
             reservation.confirm()
@@ -65,40 +68,40 @@ class ReservationSpec extends Specification {
         given:
             def reservation = new Reservation("1234", LocalDateTime.now().plusDays(1), "Tony", "Stark",
                     [
-                            new Ticket(5, 5, TicketType.ADULT),
+                            Ticket.of(Seat.of(5, 5), TicketType.ADULT)
                     ] as Set)
         when:
             reservation.cancel()
         and:
             reservation.confirm()
         then:
-            thrown(IllegalStateException)
+            thrown(ReservationAlreadyCancelledException)
     }
 
     def "Should not be able to confirm already confirmed reservation"() {
         given:
             def reservation = new Reservation("1234", LocalDateTime.now().plusDays(1), "Tony", "Stark",
                     [
-                            new Ticket(5, 5, TicketType.ADULT),
+                            Ticket.of(Seat.of(5, 5), TicketType.ADULT)
                     ] as Set)
         when:
             reservation.confirm()
         and:
             reservation.confirm()
         then:
-            thrown(IllegalStateException)
+            thrown(ReservationAlreadyConfirmedException)
     }
 
     def "Should not be able to confirm expired reservation"() {
         given:
             def reservation = new Reservation("1234", LocalDateTime.now().minusHours(1), "Tony", "Stark",
                     [
-                            new Ticket(5, 5, TicketType.ADULT),
+                            Ticket.of(Seat.of(5, 5), TicketType.ADULT)
                     ] as Set)
         when:
             reservation.calculateExpirationDate()
             reservation.confirm()
         then:
-            thrown(IllegalStateException)
+            thrown(ReservationAlreadyExpiredException)
     }
 }

@@ -24,7 +24,7 @@ class ReservationServiceSpec extends Specification {
             screeningRepository.findById(_ as String) >> Mono.empty()
 
         when:
-            reservationService.reserve("non existing", "Tony", "Stark", [new Ticket(1, 2, TicketType.ADULT)] as Set)
+            reservationService.reserve("non existing", "Tony", "Stark", [ Ticket.of(Seat.of(1, 2), TicketType.ADULT) ] as Set)
                     .block()
         then:
             thrown(IllegalStateException)
@@ -38,7 +38,7 @@ class ReservationServiceSpec extends Specification {
                     new Screening(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).minusHours(2), "Joker", "Dream", 10, 15))
 
         when:
-            def result = reservationService.reserve("existing", "Tony", "Stark", [new Ticket(1, 2, TicketType.ADULT)] as Set)
+            def result = reservationService.reserve("existing", "Tony", "Stark", [Ticket.of(Seat.of(1, 2), TicketType.ADULT) ] as Set)
                     .block()
         then:
             result

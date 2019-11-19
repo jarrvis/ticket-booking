@@ -35,12 +35,12 @@ import java.net.URI;
 @RequestMapping(value = "/screenings")
 public class ScreeningController {
 
+    private final ScreeningService screeningService;
+
     public ScreeningController(
             final ScreeningService screeningService) {
         this.screeningService = screeningService;
     }
-
-    private final ScreeningService screeningService;
 
     /**
      * REST operation to add new screening to multiplex offer

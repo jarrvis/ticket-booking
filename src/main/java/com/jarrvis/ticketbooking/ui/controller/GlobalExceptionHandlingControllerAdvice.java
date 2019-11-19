@@ -1,5 +1,12 @@
 package com.jarrvis.ticketbooking.ui.controller;
 
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyCancelledException;
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyConfirmedException;
+import com.jarrvis.ticketbooking.domain.exception.ReservationAlreadyExpiredException;
+import com.jarrvis.ticketbooking.domain.exception.SeatAlreadyBookedException;
+import com.jarrvis.ticketbooking.domain.exception.SeatDoesNotExistException;
+import com.jarrvis.ticketbooking.domain.exception.SeatNotReservedException;
+import com.jarrvis.ticketbooking.domain.exception.SingleSeatLeftAfterBookingException;
 import com.jarrvis.ticketbooking.ui.exception.AlreadyExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.VndErrors;
@@ -41,10 +48,19 @@ public class GlobalExceptionHandlingControllerAdvice {
      *
      * @param ex Exception
      */
-    @ExceptionHandler(AlreadyExistException.class)
+    @ExceptionHandler({
+            AlreadyExistException.class,
+            SeatAlreadyBookedException.class,
+            SeatDoesNotExistException.class,
+            SeatNotReservedException.class,
+            SingleSeatLeftAfterBookingException.class,
+            ReservationAlreadyCancelledException.class,
+            ReservationAlreadyConfirmedException.class,
+            ReservationAlreadyExpiredException.class,
+    })
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ResponseBody
-    public VndErrors handleAlreadyExistException(AlreadyExistException ex) {
+    public VndErrors handleDomainException(RuntimeException ex) {
         log.error(ex.getMessage(), ex);
         return new VndErrors("error", ex.getMessage());
     }
